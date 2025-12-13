@@ -7,6 +7,7 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
+        // First push test
     }
 
     private void OnCounterClicked(object sender, EventArgs e)
