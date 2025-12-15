@@ -6,31 +6,25 @@ using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels;
 
-public class CollectionsViewModel : BaseViewModel
+public class CollectionsViewModel : BasePageViewModel
 {
     private readonly DatabaseService _databaseService;
     
     public string Title => "Collections";
     
     public ObservableCollection<Collection> Collections { get; } = new();
-    
-    public ICommand LoadCollectionsCommand { get; }
 
     public CollectionsViewModel(DatabaseService databaseService)
     {
         _databaseService = databaseService;
-        
-        LoadCollectionsCommand = new Command(async () => await LoadCollectionsAsync());
     }
     
     private async Task LoadCollectionsAsync()
     {
-        if (IsBusy)
-            return;
-
+        IsBusy = true;
+        
         try
         {
-            IsBusy = true;
             Collections.Clear();
 
             var collections = await _databaseService.GetCollectionsAsync();
@@ -42,5 +36,10 @@ public class CollectionsViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    protected override async Task InitializeDataAsync()
+    {
+        await LoadCollectionsAsync();
     }
 }

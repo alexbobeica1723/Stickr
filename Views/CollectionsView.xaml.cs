@@ -14,11 +14,9 @@ public partial class CollectionsView : ContentPage
         BindingContext = _collectionsViewModel;
     }
     
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-
-        if (!_collectionsViewModel.Collections.Any())
-            _collectionsViewModel.LoadCollectionsCommand.Execute(null);
+        await _collectionsViewModel.InitializeAsync();
     }
 }
