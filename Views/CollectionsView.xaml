@@ -2,11 +2,39 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Stickr.ViewModels"
+             xmlns:models="clr-namespace:Stickr.Models"
+             x:DataType="viewModels:CollectionsViewModel"
              x:Class="Stickr.Views.CollectionsView">
     <VerticalStackLayout Padding="16">
-        <Label 
-            Text="Collections" 
-            FontSize="24" />
-        <Label Text="Available sticker collections will appear here." />
+        <CollectionView
+            ItemsSource="{Binding Collections}"
+            SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Collection">
+                    <Frame Margin="10" Padding="12" CornerRadius="12">
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                Text="{Binding Title}"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Description}"
+                                FontSize="14"
+                                Opacity="0.7" />
+
+                            <Label
+                                Text="{Binding TotalStickers,
+                                   StringFormat='Total stickers: {0}'}"
+                                FontSize="12"
+                                Opacity="0.6" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>

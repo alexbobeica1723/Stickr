@@ -11,6 +11,10 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        
+        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "stickr.db3");
+        builder.Services.AddSingleton(new DatabaseService(dbPath));
+        
         builder
             .UseMauiApp<App>()
             .UseOcr()
@@ -20,10 +24,11 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton<Stickr.Services.Interfaces.IOcrService, OcrService>();
+        builder.Services.AddSingleton<SeedService>();
 
-        builder.Services.AddTransient<CollectionsViewModel>();
-        builder.Services.AddTransient<MyAlbumsViewModel>();
-        builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddSingleton<CollectionsViewModel>();
+        builder.Services.AddSingleton<MyAlbumsViewModel>();
+        builder.Services.AddSingleton<ProfileViewModel>();
 
         builder.Services.AddTransient<CollectionsView>();
         builder.Services.AddTransient<MyAlbumsView>();

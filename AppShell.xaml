@@ -10,17 +10,14 @@
     <TabBar>
         <ShellContent
             Title="Collections"
-            Icon="collections.png"
             ContentTemplate="{DataTemplate views:CollectionsView}" />
 
         <ShellContent
             Title="My Albums"
-            Icon="albums.png"
             ContentTemplate="{DataTemplate views:MyAlbumsView}" />
 
         <ShellContent
             Title="Profile"
-            Icon="profile.png"
             ContentTemplate="{DataTemplate views:ProfileView}" />
     </TabBar>
 
