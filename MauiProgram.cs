@@ -3,7 +3,9 @@ using Plugin.Maui.OCR;
 using Stickr.Services.Implementations;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels;
+using Stickr.ViewModels.Pages;
 using Stickr.Views;
+using Stickr.Views.Pages;
 
 namespace Stickr;
 
@@ -35,10 +37,13 @@ public static class MauiProgram
         builder.Services.AddSingleton<CollectionsViewModel>();
         builder.Services.AddSingleton<MyAlbumsViewModel>();
         builder.Services.AddSingleton<ProfileViewModel>();
+        builder.Services.AddSingleton<AlbumDetailsViewModel>();
 
+        // Views
         builder.Services.AddTransient<CollectionsView>();
         builder.Services.AddTransient<MyAlbumsView>();
         builder.Services.AddTransient<ProfileView>();
+        builder.Services.AddTransient<AlbumDetailsView>();
 
 #if DEBUG
         builder.Logging.AddDebug();

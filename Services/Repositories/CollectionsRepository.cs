@@ -16,4 +16,9 @@ public class CollectionsRepository
     public Task<List<Collection>> GetAllAsync() => _db.Table<Collection>().ToListAsync();
     public Task InsertAsync(Collection collection) => _db.InsertAsync(collection);
     public Task<int> UpdateAsync(Collection collection) => _db.InsertOrReplaceAsync(collection);
+    
+    public Task<Collection?> GetByIdAsync(string id) =>
+        _db.Table<Collection>()
+            .Where(c => c.Id == id)
+            .FirstOrDefaultAsync();
 }
