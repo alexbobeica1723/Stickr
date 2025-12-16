@@ -6,9 +6,10 @@ namespace Stickr.Models;
 [Table("Albums")]
 public class Album
 {
-    [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
+    [PrimaryKey]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
+    [Indexed]
     public string CollectionId { get; set; } = string.Empty;
 
     public string Title { get; set; } = string.Empty;
@@ -18,18 +19,9 @@ public class Album
     public int TotalStickers { get; set; }
 
     /// <summary>
-    /// Stickers the user already owns
+    /// How many stickers the user owns so far
     /// </summary>
-    public string OwnedStickersSerialized { get; set; } = string.Empty;
-    
-    /*public List<int> OwnedStickers
-    {
-        get =>
-            string.IsNullOrWhiteSpace(OwnedStickersSerialized)
-                ? new List<int>()
-                : JsonSerializer.Deserialize<List<int>>(OwnedStickersSerialized)!;
+    public int CollectedStickers { get; set; } = 0;
 
-        set =>
-            OwnedStickersSerialized = JsonSerializer.Serialize(value);
-    }*/
+    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
 }

@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Stickr.Messages;
 using Stickr.Models;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
@@ -59,5 +61,8 @@ public partial class CollectionItemViewModel : BaseViewModel
         IsCollecting = true;
 
         await _collectionsRepository.UpdateAsync(Model);
+        
+        // 🔔 Notify My Albums
+        WeakReferenceMessenger.Default.Send(new AlbumStartedMessage());
     }
 }

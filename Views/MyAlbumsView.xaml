@@ -2,11 +2,28 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Stickr.ViewModels"
+             xmlns:models="clr-namespace:Stickr.Models"
+             x:DataType="viewModels:MyAlbumsViewModel"
              x:Class="Stickr.Views.MyAlbumsView">
-    <VerticalStackLayout Padding="16">
-        <Label
-            Text="My Albums"
-            FontSize="24" />
-        <Label Text="Albums you started will appear here." />
-    </VerticalStackLayout>
+    <CollectionView ItemsSource="{Binding Albums}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:Album">
+                <Frame Padding="12" Margin="8">
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            Text="{Binding Title}"
+                            FontAttributes="Bold"
+                            FontSize="16" />
+
+                        <Label
+                            Text="{Binding CollectedStickers, StringFormat='Progress: {0}'}" />
+
+                        <ProgressBar
+                            Progress="0.5" />
+                    </VerticalStackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>

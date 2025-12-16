@@ -10,4 +10,14 @@ public partial class MyAlbumsView : ContentPage
         
         BindingContext = myAlbumsViewModel;
     }
+    
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is MyAlbumsViewModel myAlbumsViewModel)
+        {
+            await myAlbumsViewModel.InitializeDataAsync();
+        }
+    }
 }
