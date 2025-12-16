@@ -23,5 +23,12 @@ public class Album
     /// </summary>
     public int CollectedStickers { get; set; } = 0;
 
-    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+    public string PagesJson { get; set; } = "[]";
+    
+    [Ignore]
+    public IReadOnlyList<Page> Pages
+    {
+        get => JsonSerializer.Deserialize<List<Page>>(PagesJson) ?? [];
+        set => PagesJson = JsonSerializer.Serialize(value);
+    }
 }

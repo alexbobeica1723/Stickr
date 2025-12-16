@@ -26,17 +26,15 @@ public class Collection
     // Stored as JSON for now
     public string PagesJson { get; set; } = string.Empty;
 
-    /*[Ignore]
+    [Ignore]
     public List<Page> Pages
     {
-        get =>
-            string.IsNullOrWhiteSpace(PagesJson)
-                ? new List<Page>()
-                : JsonSerializer.Deserialize<List<Page>>(PagesJson)!;
+        get => string.IsNullOrWhiteSpace(PagesJson)
+            ? new List<Page>()
+            : JsonSerializer.Deserialize<List<Page>>(PagesJson)!;
 
-        set =>
-            PagesJson = JsonSerializer.Serialize(value);
-    }*/
+        set => PagesJson = JsonSerializer.Serialize(value);
+    }
     
     public bool IsCollecting { get; set; } = false;
 }

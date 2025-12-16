@@ -2,27 +2,21 @@ using Stickr.ViewModels.Pages;
 
 namespace Stickr.Views.Pages;
 
-[QueryProperty(nameof(AlbumId), "albumId")]
 public partial class AlbumDetailsView : ContentPage
 {
-    private readonly AlbumDetailsViewModel _viewModel;
-
     public AlbumDetailsView(AlbumDetailsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = _viewModel = viewModel;
+        BindingContext = viewModel;
     }
-
-    private string _albumId = string.Empty;
-
-    public string AlbumId
+    
+    protected override async void OnAppearing()
     {
-        get => _albumId;
-        set
+        base.OnAppearing();
+
+        if (BindingContext is AlbumDetailsViewModel viewModel)
         {
-            _albumId = value;
-            _viewModel.SetAlbumId(value);
-            _ = _viewModel.InitializeAsync();
+            await viewModel.InitializeDataAsync();
         }
     }
 }

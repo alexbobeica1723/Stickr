@@ -52,7 +52,8 @@ public partial class CollectionItemViewModel : BaseViewModel
             CollectionId = Model.Id,
             Title = Model.Title,
             Image = Model.Image,
-            TotalStickers = Model.TotalStickers
+            TotalStickers = Model.TotalStickers,
+            Pages = Model.Pages
         };
 
         await _albumsRepository.InsertAsync(album);

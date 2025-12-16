@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:Stickr.ViewModels.Pages"
+    xmlns:models="clr-namespace:Stickr.Models"
     x:Class="Stickr.Views.Pages.AlbumDetailsView"
     x:DataType="pages:AlbumDetailsViewModel"
     Title="{Binding Title}">
@@ -20,6 +21,26 @@
                 Text="{Binding Description}"
                 FontSize="14"
                 TextColor="Gray" />
+            
+            <CollectionView ItemsSource="{Binding Pages}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Page">
+                        <Frame Padding="12" Margin="6">
+                            <VerticalStackLayout>
+                                <Label
+                                    Text="{Binding Number, StringFormat='Page {0}'}"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding FirstSticker, StringFormat='Stickers {0}'}" />
+
+                                <Label
+                                    Text="{Binding LastSticker, StringFormat='to {0}'}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
         </VerticalStackLayout>
     </ScrollView>

@@ -1,5 +1,6 @@
 using Stickr.Models;
 using Stickr.Services.Repositories;
+using Page = Stickr.Models.Page;
 
 namespace Stickr.Services.Implementations;
 
@@ -23,7 +24,12 @@ public class SeedService
                 Description = "Starter album",
                 Image = "album.png",
                 TotalStickers = 100,
-                //Pages = new List<Page> { new Page { Number = 1, FirstSticker = 1, LastSticker = 12 } }
+                Pages = new List<Page>
+                {
+                    new() { Number = 1, FirstSticker = 1, LastSticker = 13 },
+                    new() { Number = 2, FirstSticker = 14, LastSticker = 21 },
+                    new() { Number = 3, FirstSticker = 22, LastSticker = 30 }
+                }
             };
             
             await _collectionsRepository.InsertAsync(defaultCollection);

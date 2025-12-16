@@ -1,10 +1,19 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels.Pages;
 
-public partial class AlbumDetailsViewModel : BaseModalPageViewModel
+public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("albumId", out var value))
+        {
+            _albumId = value.ToString() ?? string.Empty;
+        }
+    }
+    
     private readonly AlbumsRepository _albumsRepository;
     private readonly CollectionsRepository _collectionsRepository;
 
@@ -18,8 +27,14 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel
 
     private string _albumId = string.Empty;
 
-    public string Title { get; private set; } = string.Empty;
-    public string Description { get; private set; } = string.Empty;
+    [ObservableProperty]
+    private string _title;
+
+    [ObservableProperty]
+    private string _description;
+    
+    [ObservableProperty]
+    private IReadOnlyList<Stickr.Models.Page> _pages;
 
     public void SetAlbumId(string albumId)
     {
@@ -38,14 +53,13 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel
             return;
 
         Title = album.Title;
-        OnPropertyChanged(nameof(Title));
+        Pages = album.Pages;
 
         // Load description from Collection (single source of truth)
         var collection =
             await _collectionsRepository.GetByIdAsync(album.CollectionId);
 
         Description = collection?.Description ?? string.Empty;
-        OnPropertyChanged(nameof(Description));
 
         IsBusy = false;
     }
