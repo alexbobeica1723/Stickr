@@ -1,9 +1,10 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Stickr.ViewModels.Base;
 
-public class BaseViewModel : INotifyPropertyChanged
+public class BaseViewModel : ObservableObject, INotifyPropertyChanged
 {
     private bool _isBusy;
 

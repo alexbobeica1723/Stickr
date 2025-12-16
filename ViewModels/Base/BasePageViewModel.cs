@@ -1,7 +1,11 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using Stickr.Services.Implementations;
+
 namespace Stickr.ViewModels.Base;
 
 public abstract class BasePageViewModel : BaseViewModel
 {
+    protected readonly AppInitializationService AppInit;
     private bool _isBusy;
     private bool _isInitialized;
 
@@ -15,29 +19,23 @@ public abstract class BasePageViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
+    
+    protected BasePageViewModel(AppInitializationService appInit)
+    {
+        AppInit = appInit;
+    }
 
     /// <summary>
     /// Called once when the page appears for the first time
     /// </summary>
     public async Task InitializeAsync()
     {
-        if (_isInitialized)
-            return;
-
-        try
-        {
-            IsBusy = true;
-            await InitializeDataAsync();
-            _isInitialized = true;
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        await AppInit.Ready;
+        await InitializeDataAsync();
     }
 
     /// <summary>
     /// Each page ViewModel must implement its own data loading logic
     /// </summary>
-    protected abstract Task InitializeDataAsync();
+    public abstract Task InitializeDataAsync();
 }

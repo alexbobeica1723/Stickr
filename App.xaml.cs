@@ -1,37 +1,27 @@
-﻿using Stickr.Services.Implementations;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Stickr.Services.Implementations;
+using Stickr.ViewModels;
+using Stickr.Views.Pages;
 
 namespace Stickr;
 
 public partial class App : Application
 {
-    private readonly IServiceProvider _services;
-    
-    public App(IServiceProvider services)
+    public App(AppInitializationService initService)
     {
         InitializeComponent();
 
-        MainPage = new AppShell();
-        _services = services;
-        
-        // Fire-and-forget async initialization
-        InitializeAsync();
-    }
-    
-    private async void InitializeAsync()
-    {
-        try
-        {
-            using var scope = _services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<DatabaseService>();
-            await db.InitializeAsync();
+        MainPage = new StartupPage();
 
-            var seeder = scope.ServiceProvider.GetRequiredService<SeedService>();
-            await seeder.SeedAsync();
-        }
-        catch (Exception ex)
-        {
-            // Log if something fails
-            Console.WriteLine($"Initialization error: {ex}");
-        }
+        _ = InitializeAsync(initService);
+    }
+
+    private async Task InitializeAsync(AppInitializationService initService)
+    {
+        await initService.InitializeAsync();
+
+        MainPage = new AppShell();
     }
 }

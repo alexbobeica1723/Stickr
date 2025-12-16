@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Stickr.Views.Pages.StartupPage"
+    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#121212}"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <VerticalStackLayout
+            Spacing="16"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+
+            <ActivityIndicator
+                IsRunning="True"
+                WidthRequest="48"
+                HeightRequest="48" />
+
+            <Label
+                Text="Preparing Stickr..."
+                FontSize="16"
+                HorizontalTextAlignment="Center"
+                TextColor="{AppThemeBinding Light=#333333, Dark=#DDDDDD}" />
+        </VerticalStackLayout>
+    </Grid>
+
+</ContentPage>

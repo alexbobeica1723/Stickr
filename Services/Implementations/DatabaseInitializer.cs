@@ -1,15 +1,15 @@
-using Stickr.Models;
 using SQLite;
+using Stickr.Models;
 
 namespace Stickr.Services.Implementations;
 
-public class DatabaseService
+public class DatabaseInitializer
 {
     private readonly SQLiteAsyncConnection _db;
 
-    public DatabaseService(string dbPath)
+    public DatabaseInitializer(SQLiteAsyncConnection db)
     {
-        _db = new SQLiteAsyncConnection(dbPath);
+        _db = db;
     }
 
     public async Task InitializeAsync()
@@ -17,6 +17,4 @@ public class DatabaseService
         await _db.CreateTableAsync<Collection>();
         await _db.CreateTableAsync<Album>();
     }
-
-    public SQLiteAsyncConnection GetConnection() => _db;
 }

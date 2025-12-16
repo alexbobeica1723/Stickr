@@ -1,45 +1,45 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Stickr.Models;
-using Stickr.Services.Implementations;
+using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Stickr.Services.Implementations;
+using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels;
 
 public class CollectionsViewModel : BasePageViewModel
 {
-    private readonly DatabaseService _databaseService;
-    
-    public string Title => "Collections";
-    
-    public ObservableCollection<Collection> Collections { get; } = new();
+    private readonly CollectionsRepository _collectionsRepo;
+    private readonly AlbumsRepository _albumsRepo;
 
-    public CollectionsViewModel(DatabaseService databaseService)
+    public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
+
+    public CollectionsViewModel(
+        AppInitializationService appInit,
+        CollectionsRepository repo,
+        AlbumsRepository albumsRepo)
+        : base(appInit)
     {
-        _databaseService = databaseService;
+        _collectionsRepo = repo;
+        _albumsRepo = albumsRepo;
     }
-    
-    private async Task LoadCollectionsAsync()
+
+    public override async Task InitializeDataAsync()
     {
         IsBusy = true;
-        
-        try
+
+        Collections.Clear();
+
+        var data = await _collectionsRepo.GetAllAsync();
+        foreach (var c in data)
         {
-            Collections.Clear();
-
-            var collections = await _databaseService.GetCollectionsAsync();
-
-            foreach (var collection in collections)
-                Collections.Add(collection);
+            Collections.Add(
+                new CollectionItemViewModel(c, _collectionsRepo, _albumsRepo));
         }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
 
-    protected override async Task InitializeDataAsync()
-    {
-        await LoadCollectionsAsync();
+        IsBusy = false;
     }
 }

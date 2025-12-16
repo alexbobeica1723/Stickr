@@ -17,6 +17,8 @@ public partial class CollectionsView : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _collectionsViewModel.InitializeAsync();
+
+        if (BindingContext is CollectionsViewModel vm)
+            await vm.InitializeDataAsync();
     }
 }

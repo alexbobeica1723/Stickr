@@ -1,40 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewModels="clr-namespace:Stickr.ViewModels"
-             xmlns:models="clr-namespace:Stickr.Models"
-             x:DataType="viewModels:CollectionsViewModel"
-             x:Class="Stickr.Views.CollectionsView">
-    <VerticalStackLayout Padding="16">
+<ContentPage
+    x:Class="Stickr.Views.CollectionsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:Stickr.ViewModels"
+    xmlns:elementsViewModels="clr-namespace:Stickr.ViewModels.Elements"
+    x:DataType="viewModels:CollectionsViewModel"
+    Title="Collections">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Loading indicator -->
+        <ActivityIndicator
+            Grid.Row="0"
+            IsVisible="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            HorizontalOptions="Center"
+            Margin="12" />
+
+        <!-- Collections list -->
         <CollectionView
+            Grid.Row="1"
             ItemsSource="{Binding Collections}"
             SelectionMode="None">
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Collection">
-                    <Frame Margin="10" Padding="12" CornerRadius="12">
-                        <VerticalStackLayout Spacing="6">
+                <DataTemplate
+                    x:DataType="elementsViewModels:CollectionItemViewModel">
+
+                    <Frame
+                        Margin="12"
+                        Padding="12"
+                        CornerRadius="12"
+                        HasShadow="True">
+
+                        <VerticalStackLayout Spacing="8">
+
                             <Label
-                                Text="{Binding Title}"
+                                Text="{Binding Model.Title}"
                                 FontSize="18"
                                 FontAttributes="Bold" />
 
                             <Label
-                                Text="{Binding Description}"
+                                Text="{Binding Model.Description}"
                                 FontSize="14"
-                                Opacity="0.7" />
+                                TextColor="Gray" />
 
                             <Label
-                                Text="{Binding TotalStickers,
-                                   StringFormat='Total stickers: {0}'}"
-                                FontSize="12"
-                                Opacity="0.6" />
+                                Text="{Binding StatusText}"
+                                FontSize="13"
+                                TextColor="DarkGray" />
+
+                            <Button
+                                Text="Start collecting"
+                                Command="{Binding StartCollectingCommand}" />
+
                         </VerticalStackLayout>
                     </Frame>
+
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -26,7 +26,7 @@ public class Collection
     // Stored as JSON for now
     public string PagesJson { get; set; } = string.Empty;
 
-    [Ignore]
+    /*[Ignore]
     public List<Page> Pages
     {
         get =>
@@ -36,5 +36,7 @@ public class Collection
 
         set =>
             PagesJson = JsonSerializer.Serialize(value);
-    }
+    }*/
+    
+    public bool IsCollecting { get; set; } = false;
 }
