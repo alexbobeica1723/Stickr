@@ -1,8 +1,5 @@
-﻿using System.IO;
-using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Storage;
+﻿using Microsoft.Extensions.Logging;
 using Plugin.Maui.OCR;
-using SQLite;
 using Stickr.Services.Implementations;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels;
@@ -24,8 +21,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
         
-// Database path
-        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "stickr.db3");
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "stickr.db3");
 
         // Services
         builder.Services.AddSingleton(new DatabaseService(dbPath));
@@ -33,15 +29,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<AlbumsRepository>();
         builder.Services.AddSingleton<SeedService>();
         builder.Services.AddSingleton<AppInitializationService>();
-
-        // ViewModels
-        builder.Services.AddSingleton<CollectionsViewModel>();
-
-        // ✅ ViewModels
-        builder.Services.AddTransient<CollectionsViewModel>();
-
         builder.Services.AddSingleton<Stickr.Services.Interfaces.IOcrService, OcrService>();
 
+        // ViewModels
         builder.Services.AddSingleton<CollectionsViewModel>();
         builder.Services.AddSingleton<MyAlbumsViewModel>();
         builder.Services.AddSingleton<ProfileViewModel>();

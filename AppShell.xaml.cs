@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.Maui.Controls;
-using Stickr.Services.Implementations;
-
-namespace Stickr;
+﻿namespace Stickr;
 
 public partial class AppShell : Shell
 {

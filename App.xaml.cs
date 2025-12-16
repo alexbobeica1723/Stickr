@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Stickr.Services.Implementations;
-using Stickr.ViewModels;
+﻿using Stickr.Services.Implementations;
 using Stickr.Views.Pages;
 
 namespace Stickr;

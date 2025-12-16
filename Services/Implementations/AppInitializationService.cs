@@ -2,25 +2,25 @@ namespace Stickr.Services.Implementations;
 
 public class AppInitializationService
 {
-    private readonly DatabaseService _db;
-    private readonly SeedService _seed;
+    private readonly DatabaseService _databaseService;
+    private readonly SeedService _seedService;
 
     private readonly TaskCompletionSource<bool> _readyTcs = new();
 
     public Task Ready => _readyTcs.Task;
 
     public AppInitializationService(
-        DatabaseService db,
-        SeedService seed)
+        DatabaseService databaseService,
+        SeedService seedService)
     {
-        _db = db;
-        _seed = seed;
+        _databaseService = databaseService;
+        _seedService = seedService;
     }
 
     public async Task InitializeAsync()
     {
-        await _db.InitializeAsync();
-        await _seed.SeedAsync();
+        await _databaseService.InitializeAsync();
+        await _seedService.SeedAsync();
 
         _readyTcs.TrySetResult(true);
     }

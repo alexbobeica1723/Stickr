@@ -18,7 +18,9 @@ public partial class CollectionsView : ContentPage
     {
         base.OnAppearing();
 
-        if (BindingContext is CollectionsViewModel vm)
-            await vm.InitializeDataAsync();
+        if (BindingContext is CollectionsViewModel collectionsViewModel)
+        {
+            await collectionsViewModel.InitializeDataAsync();
+        }
     }
 }

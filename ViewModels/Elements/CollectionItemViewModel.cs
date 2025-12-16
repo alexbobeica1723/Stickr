@@ -8,8 +8,8 @@ namespace Stickr.ViewModels.Elements;
 
 public partial class CollectionItemViewModel : BaseViewModel
 {
-    private readonly CollectionsRepository _collectionsRepo;
-    private readonly AlbumsRepository _albumsRepo;
+    private readonly CollectionsRepository _collectionsRepository;
+    private readonly AlbumsRepository _albumsRepository;
 
     public Collection Model { get; }
 
@@ -23,12 +23,12 @@ public partial class CollectionItemViewModel : BaseViewModel
 
     public CollectionItemViewModel(
         Collection model,
-        CollectionsRepository collectionsRepo,
-        AlbumsRepository albumsRepo)
+        CollectionsRepository collectionsRepository,
+        AlbumsRepository albumsRepository)
     {
         Model = model;
-        _collectionsRepo = collectionsRepo;
-        _albumsRepo = albumsRepo;
+        _collectionsRepository =  collectionsRepository;
+        _albumsRepository = albumsRepository;
 
         isCollecting = model.IsCollecting;
 
@@ -53,11 +53,11 @@ public partial class CollectionItemViewModel : BaseViewModel
             TotalStickers = Model.TotalStickers
         };
 
-        await _albumsRepo.InsertAsync(album);
+        await _albumsRepository.InsertAsync(album);
 
         Model.IsCollecting = true;
         IsCollecting = true;
 
-        await _collectionsRepo.UpdateAsync(Model);
+        await _collectionsRepository.UpdateAsync(Model);
     }
 }

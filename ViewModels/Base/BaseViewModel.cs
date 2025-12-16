@@ -8,10 +8,15 @@ public class BaseViewModel : ObservableObject, INotifyPropertyChanged
 {
     private bool _isBusy;
 
-    protected bool IsBusy
+    public bool IsBusy
     {
         get => _isBusy;
-        set => SetField(ref _isBusy, value);
+        set
+        {
+            if (_isBusy == value) return;
+            _isBusy = value;
+            OnPropertyChanged();
+        }
     }
     
     public event PropertyChangedEventHandler? PropertyChanged;

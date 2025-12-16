@@ -1,22 +1,20 @@
-using System.Threading.Tasks;
 using Stickr.Models;
 using Stickr.Services.Repositories;
-using Page = Stickr.Models.Page;
 
 namespace Stickr.Services.Implementations;
 
 public class SeedService
 {
-    private readonly CollectionsRepository _collectionsRepo;
+    private readonly CollectionsRepository _collectionsRepository;
 
-    public SeedService(CollectionsRepository collectionsRepo)
+    public SeedService(CollectionsRepository collectionsRepository)
     {
-        _collectionsRepo = collectionsRepo;
+        _collectionsRepository = collectionsRepository;
     }
 
     public async Task SeedAsync()
     {
-        var existing = await _collectionsRepo.GetAllAsync();
+        var existing = await _collectionsRepository.GetAllAsync();
         if (!existing.Any())
         {
             var defaultCollection = new Collection
@@ -27,7 +25,8 @@ public class SeedService
                 TotalStickers = 100,
                 //Pages = new List<Page> { new Page { Number = 1, FirstSticker = 1, LastSticker = 12 } }
             };
-            await _collectionsRepo.InsertAsync(defaultCollection);
+            
+            await _collectionsRepository.InsertAsync(defaultCollection);
         }
     }
 }

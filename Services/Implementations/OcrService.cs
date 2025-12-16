@@ -10,7 +10,9 @@ public class OcrService : IOcrService
         var result = await OcrPlugin.Default.RecognizeTextAsync(imageBytes);
 
         if (!result.Success || result.Elements.Count == 0)
+        {
             return string.Empty;
+        }
 
         return string.Join(" ", result.Elements.Select(e => e.Text));
     }

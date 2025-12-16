@@ -1,10 +1,6 @@
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Stickr.Models;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Stickr.Services.Implementations;
 using Stickr.ViewModels.Elements;
 
@@ -12,19 +8,19 @@ namespace Stickr.ViewModels;
 
 public class CollectionsViewModel : BasePageViewModel
 {
-    private readonly CollectionsRepository _collectionsRepo;
-    private readonly AlbumsRepository _albumsRepo;
+    private readonly CollectionsRepository _collectionsRepository;
+    private readonly AlbumsRepository _albumsRepository;
 
     public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
 
     public CollectionsViewModel(
-        AppInitializationService appInit,
-        CollectionsRepository repo,
-        AlbumsRepository albumsRepo)
-        : base(appInit)
+        AppInitializationService appInitializationService,
+        CollectionsRepository collectionsRepository,
+        AlbumsRepository albumsRepository)
+        : base(appInitializationService)
     {
-        _collectionsRepo = repo;
-        _albumsRepo = albumsRepo;
+        _collectionsRepository = collectionsRepository;
+        _albumsRepository = albumsRepository;
     }
 
     public override async Task InitializeDataAsync()
@@ -33,11 +29,11 @@ public class CollectionsViewModel : BasePageViewModel
 
         Collections.Clear();
 
-        var data = await _collectionsRepo.GetAllAsync();
+        var data = await _collectionsRepository.GetAllAsync();
         foreach (var c in data)
         {
             Collections.Add(
-                new CollectionItemViewModel(c, _collectionsRepo, _albumsRepo));
+                new CollectionItemViewModel(c, _collectionsRepository, _albumsRepository));
         }
 
         IsBusy = false;
