@@ -23,6 +23,14 @@ public class Collection
     /// </summary>
     public int TotalStickers { get; set; }
     
+    /// <summary>
+    /// Regex pattern used to extract sticker codes from OCR text
+    /// Examples:
+    ///  - @"\b\d{1,3}\b"
+    ///  - @"\b(GER|AUS)\s?\d{1,2}\b"
+    /// </summary>
+    public string StickerRegexPattern { get; set; } = string.Empty;
+    
     // Stored as JSON for now
     public string PagesJson { get; set; } = string.Empty;
 

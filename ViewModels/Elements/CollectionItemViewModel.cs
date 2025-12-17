@@ -53,6 +53,7 @@ public partial class CollectionItemViewModel : BaseViewModel
             Title = Model.Title,
             Image = Model.Image,
             TotalStickers = Model.TotalStickers,
+            StickerRegexPattern = Model.StickerRegexPattern,
             Pages = Model.Pages
         };
 

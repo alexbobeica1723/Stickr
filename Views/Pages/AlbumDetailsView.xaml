@@ -45,6 +45,14 @@
             <Button
                 Text="Add test stickers (3, 5, 7)"
                 Command="{Binding AddTestStickersCommand}" />
+            
+            <Button
+                Text="Delete sticker #5"
+                Command="{Binding DeleteStickerFiveCommand}" />
+            
+            <Button
+                Text="Scan stickers"
+                Command="{Binding ScanStickersCommand}" />
 
             <CollectionView
                 ItemsSource="{Binding Stickers}"

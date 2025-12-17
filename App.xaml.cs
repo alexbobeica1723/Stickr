@@ -1,4 +1,5 @@
-﻿using Stickr.Services.Implementations;
+﻿using Plugin.Maui.OCR;
+using Stickr.Services.Implementations;
 using Stickr.Views.Pages;
 
 namespace Stickr;
@@ -17,6 +18,7 @@ public partial class App : Application
     private async Task InitializeAsync(AppInitializationService initService)
     {
         await initService.InitializeAsync();
+        await OcrPlugin.Default.InitAsync();
 
         MainPage = new AppShell();
     }

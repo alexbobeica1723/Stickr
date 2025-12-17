@@ -24,6 +24,7 @@ public class SeedService
                 Description = "Starter album",
                 Image = "album.png",
                 TotalStickers = 100,
+                StickerRegexPattern = @"^\d{1,3}$",
                 Pages = new List<Page>
                 {
                     new() { Number = 1, FirstSticker = 1, LastSticker = 13 },
