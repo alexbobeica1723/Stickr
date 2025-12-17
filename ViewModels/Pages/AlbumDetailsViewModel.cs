@@ -1,4 +1,7 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Stickr.Models;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
 
@@ -16,13 +19,36 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     private readonly AlbumsRepository _albumsRepository;
     private readonly CollectionsRepository _collectionsRepository;
+    private readonly StickersRepository _stickersRepository;
+    
+    [RelayCommand]
+    private async Task AddTestStickersAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_albumId))
+            return;
+
+        var newStickers = new[]
+        {
+            new Sticker { AlbumId = _albumId, Number = 3 },
+            new Sticker { AlbumId = _albumId, Number = 5 },
+            new Sticker { AlbumId = _albumId, Number = 7 }
+        };
+
+        await _stickersRepository.InsertManyAsync(newStickers);
+
+        // Update UI immediately
+        foreach (var sticker in newStickers)
+            Stickers.Add(sticker);
+    }
 
     public AlbumDetailsViewModel(
         AlbumsRepository albumsRepository,
-        CollectionsRepository collectionsRepository)
+        CollectionsRepository collectionsRepository,
+        StickersRepository stickersRepository)
     {
         _albumsRepository = albumsRepository;
         _collectionsRepository = collectionsRepository;
+        _stickersRepository = stickersRepository;
     }
 
     private string _albumId = string.Empty;
@@ -36,10 +62,8 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     [ObservableProperty]
     private IReadOnlyList<Stickr.Models.Page> _pages;
 
-    public void SetAlbumId(string albumId)
-    {
-        _albumId = albumId;
-    }
+    [ObservableProperty]
+    private ObservableCollection<Sticker> stickers;
 
     public override async Task InitializeDataAsync()
     {
@@ -54,12 +78,10 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
         Title = album.Title;
         Pages = album.Pages;
-
-        // Load description from Collection (single source of truth)
-        var collection =
-            await _collectionsRepository.GetByIdAsync(album.CollectionId);
-
-        Description = collection?.Description ?? string.Empty;
+        Description = "Test";
+        
+        var loadedStickers = await _stickersRepository.GetByAlbumIdAsync(_albumId);
+        Stickers = new ObservableCollection<Sticker>(loadedStickers);
 
         IsBusy = false;
     }

@@ -29,6 +29,7 @@ public static class MauiProgram
         builder.Services.AddSingleton(new DatabaseService(dbPath));
         builder.Services.AddSingleton<CollectionsRepository>();
         builder.Services.AddSingleton<AlbumsRepository>();
+        builder.Services.AddSingleton<StickersRepository>();
         builder.Services.AddSingleton<SeedService>();
         builder.Services.AddSingleton<AppInitializationService>();
         builder.Services.AddSingleton<Stickr.Services.Interfaces.IOcrService, OcrService>();

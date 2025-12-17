@@ -16,6 +16,7 @@ public class DatabaseService
     {
         await _db.CreateTableAsync<Collection>();
         await _db.CreateTableAsync<Album>();
+        await _db.CreateTableAsync<Sticker>(); 
     }
 
     public SQLiteAsyncConnection GetConnection() => _db;
