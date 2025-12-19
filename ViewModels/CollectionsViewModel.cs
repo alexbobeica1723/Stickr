@@ -1,15 +1,23 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
 using Stickr.Services.Implementations;
 using Stickr.ViewModels.Elements;
+using Stickr.Views.Pages;
 
 namespace Stickr.ViewModels;
 
-public class CollectionsViewModel : BasePageViewModel
+public partial class CollectionsViewModel : BasePageViewModel
 {
     private readonly CollectionsRepository _collectionsRepository;
     private readonly AlbumsRepository _albumsRepository;
+    
+    [RelayCommand]
+    private async Task CreateCollectionAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(CreateCollectionView));
+    }
 
     public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
 

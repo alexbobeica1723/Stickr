@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Stickr.ViewModels.Pages"
+             xmlns:models="clr-namespace:Stickr.Models"
+             x:Class="Stickr.Views.Pages.CreateCollectionView"
+             x:DataType="vm:CreateCollectionViewModel">
+    <ScrollView>
+        <VerticalStackLayout Spacing="12" Padding="16">
+
+            <Image Source="{Binding ImagePath}"
+                   HeightRequest="180"
+                   Aspect="AspectFill" />
+
+            <Button Text="Pick cover image"
+                    Command="{Binding PickImageCommand}" />
+
+            <Entry Placeholder="Title"
+                   Text="{Binding Title}" />
+
+            <Editor Placeholder="Description"
+                    Text="{Binding Description}" />
+
+            <Entry Placeholder="Sticker regex (optional)"
+                   Text="{Binding StickerRegex}" />
+
+            <Label Text="Pages" FontAttributes="Bold" />
+
+            <CollectionView ItemsSource="{Binding Pages}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Page">
+                        <HorizontalStackLayout Spacing="8">
+                            <Entry WidthRequest="60"
+                                   Text="{Binding FirstSticker}" />
+                            <Label Text="→" />
+                            <Entry WidthRequest="60"
+                                   Text="{Binding LastSticker}" />
+                            <Button Text="✕"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CreateCollectionViewModel}}, Path=RemovePageCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Add page"
+                    Command="{Binding AddPageCommand}" />
+
+            <Button Text="Save collection"
+                    Command="{Binding SaveCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

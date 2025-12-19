@@ -9,5 +9,6 @@ public partial class AppShell : Shell
         InitializeComponent();
         
         Routing.RegisterRoute(nameof(AlbumDetailsView), typeof(AlbumDetailsView));
+        Routing.RegisterRoute(nameof(CreateCollectionView), typeof(CreateCollectionView));
     }
 }

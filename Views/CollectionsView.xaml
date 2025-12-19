@@ -18,6 +18,10 @@
             IsRunning="{Binding IsBusy}"
             HorizontalOptions="Center"
             Margin="12" />
+        
+        
+        <Button Text="➕ Create collection"
+                Command="{Binding CreateCollectionCommand}" />
 
         <!-- Collections list -->
         <CollectionView
