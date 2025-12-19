@@ -6,6 +6,7 @@ using Plugin.Maui.OCR;
 using Stickr.Models;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
+using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels.Pages;
 
@@ -43,6 +44,9 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         // Update UI immediately
         foreach (var sticker in newStickers)
             Stickers.Add(sticker);
+        
+        var album =  await _albumsRepository.GetByCollectionIdAsync(_albumId);
+        RebuildPages(album);
     }
     
     [RelayCommand]
@@ -116,7 +120,15 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         // Update UI immediately
         foreach (var sticker in newStickers)
             Stickers.Add(sticker);
+        
+        var album = await _albumsRepository.GetByCollectionIdAsync(_albumId);
+        RebuildPages(album);
     }
+    
+    public ObservableCollection<AlbumPageViewModel> Pages { get; }
+        = new();
+
+    [ObservableProperty] private string _imagePath;
 
     public AlbumDetailsViewModel(
         AlbumsRepository albumsRepository,
@@ -135,12 +147,9 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
     [ObservableProperty]
     private string _description;
-    
-    [ObservableProperty]
-    private IReadOnlyList<Stickr.Models.Page> _pages;
 
     [ObservableProperty]
-    private ObservableCollection<Sticker> stickers;
+    private ObservableCollection<Sticker> stickers = new();
 
     public override async Task InitializeDataAsync()
     {
@@ -154,8 +163,29 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             return;
 
         Title = album.Title;
-        Pages = album.Pages;
-        Description = "Test";
+        Pages.Clear();
+        foreach (var page in album.Pages)
+        {
+            var stickersOnPage = new List<StickerViewModel>();
+
+            for (int i = page.FirstSticker; i <= page.LastSticker; i++)
+            {
+                var count = Stickers
+                    .Count(s => s.Number == i);
+
+                stickersOnPage.Add(
+                    new StickerViewModel(
+                        i,
+                        isCollected: count > 0));
+            }
+
+            Pages.Add(
+                new AlbumPageViewModel(
+                    page.Number,
+                    stickersOnPage));
+        }
+
+        ImagePath = album.Image;
         _stickerPattern = album.StickerRegexPattern;
         
         var loadedStickers = await _stickersRepository.GetByAlbumIdAsync(_albumId);
@@ -191,6 +221,46 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             {
                 yield return match.Value.Trim();
             }
+        }
+    }
+    
+    private void RebuildPages(Album? album)
+    {
+        if (album == null) return;
+        // Clear existing pages so CarouselView refreshes
+        Pages.Clear();
+
+        // Build a fast lookup: sticker number -> how many collected
+        var collectedStickerCounts = Stickers
+            .GroupBy(s => s.Number)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        foreach (var page in album.Pages.OrderBy(p => p.Number))
+        {
+            var stickerViewModels = new List<StickerViewModel>();
+
+            for (int stickerNumber = page.FirstSticker;
+                 stickerNumber <= page.LastSticker;
+                 stickerNumber++)
+            {
+                var isCollected =
+                    collectedStickerCounts.TryGetValue(stickerNumber, out var count)
+                    && count > 0;
+
+                stickerViewModels.Add(
+                    new StickerViewModel(
+                        stickerNumber,
+                        isCollected: isCollected
+                    )
+                );
+            }
+
+            Pages.Add(
+                new AlbumPageViewModel(
+                    pageNumber: page.Number,
+                    stickers: stickerViewModels
+                )
+            );
         }
     }
 }
