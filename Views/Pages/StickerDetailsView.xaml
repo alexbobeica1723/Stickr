@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Stickr.ViewModels.Pages"
+             x:Class="Stickr.Views.Pages.StickerDetailsView"
+             x:DataType="pages:StickerDetailsViewModel">
+    <VerticalStackLayout Padding="20" Spacing="16">
+
+        <Label
+            Text="{Binding Number, StringFormat='Sticker #{0}'}"
+            FontSize="32"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <Label
+            Text="{Binding AlbumTitle}"
+            FontSize="16"
+            HorizontalOptions="Center"
+            TextColor="Gray" />
+
+        <Label
+            Text="{Binding DuplicatesCount, StringFormat='Owned: {0}'}"
+            HorizontalOptions="Center" />
+
+        <Button
+            Text="Add duplicate"
+            Command="{Binding AddStickerCommand}" />
+
+        <Button
+            Text="Delete sticker"
+            Command="{Binding DeleteCommand}"
+            IsEnabled="{Binding CanDelete}"
+            TextColor="Red" />
+
+    </VerticalStackLayout>
+</ContentPage>

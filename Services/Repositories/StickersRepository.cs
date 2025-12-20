@@ -30,7 +30,7 @@ public class StickersRepository
             .Where(s => s.AlbumId == albumId && s.Number == number)
             .CountAsync();
     
-    private Task<List<Sticker>> GetByAlbumAndNumberAsync(string albumId, int number)
+    public Task<List<Sticker>> GetByAlbumAndNumberAsync(string albumId, int number)
         => _db.Table<Sticker>()
             .Where(s => s.AlbumId == albumId && s.Number == number)
             .OrderBy(s => s.AddedAt)
@@ -50,4 +50,12 @@ public class StickersRepository
 
         return true;
     }
+    
+    public Task<Sticker?> GetByIdAsync(string id) =>
+        _db.Table<Sticker>()
+            .Where(s => s.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase))
+            .FirstOrDefaultAsync();
+    
+    public Task DeleteByIdAsync(string id) =>
+        _db.DeleteAsync<Sticker>(id);
 }

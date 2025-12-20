@@ -44,7 +44,11 @@
                                                CornerRadius="8"
                                                BorderColor="{Binding IsCollected,
                                        Converter={StaticResource BoolToColorConverter}}">
-
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding NavigateToDetailsCommand}" />
+                                            </Frame.GestureRecognizers>
+                                            
                                             <Label Text="{Binding StickerNumber}"
                                                    HorizontalOptions="Center"
                                                    VerticalOptions="Center"

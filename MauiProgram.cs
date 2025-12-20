@@ -38,15 +38,17 @@ public static class MauiProgram
         builder.Services.AddSingleton<CollectionsViewModel>();
         builder.Services.AddSingleton<MyAlbumsViewModel>();
         builder.Services.AddSingleton<ProfileViewModel>();
-        builder.Services.AddSingleton<AlbumDetailsViewModel>();
-        builder.Services.AddSingleton<CreateCollectionViewModel>();
+        builder.Services.AddTransient<AlbumDetailsViewModel>();
+        builder.Services.AddTransient<CreateCollectionViewModel>();
+        builder.Services.AddTransient<StickerDetailsViewModel>();
 
         // Views
-        builder.Services.AddTransient<CollectionsView>();
-        builder.Services.AddTransient<MyAlbumsView>();
-        builder.Services.AddTransient<ProfileView>();
+        builder.Services.AddSingleton<CollectionsView>();
+        builder.Services.AddSingleton<MyAlbumsView>();
+        builder.Services.AddSingleton<ProfileView>();
         builder.Services.AddTransient<AlbumDetailsView>();
         builder.Services.AddTransient<CreateCollectionView>();
+        builder.Services.AddTransient<StickerDetailsView>();
 
 #if DEBUG
         builder.Logging.AddDebug();

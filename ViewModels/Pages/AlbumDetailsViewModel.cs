@@ -163,33 +163,13 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             return;
 
         Title = album.Title;
-        Pages.Clear();
-        foreach (var page in album.Pages)
-        {
-            var stickersOnPage = new List<StickerViewModel>();
-
-            for (int i = page.FirstSticker; i <= page.LastSticker; i++)
-            {
-                var count = Stickers
-                    .Count(s => s.Number == i);
-
-                stickersOnPage.Add(
-                    new StickerViewModel(
-                        i,
-                        isCollected: count > 0));
-            }
-
-            Pages.Add(
-                new AlbumPageViewModel(
-                    page.Number,
-                    stickersOnPage));
-        }
-
         ImagePath = album.Image;
         _stickerPattern = album.StickerRegexPattern;
+
+        await UpdateStickersAsync();
         
-        var loadedStickers = await _stickersRepository.GetByAlbumIdAsync(_albumId);
-        Stickers = new ObservableCollection<Sticker>(loadedStickers);
+        Pages.Clear();
+        RebuildPages(album);
 
         IsBusy = false;
     }
@@ -249,6 +229,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
                 stickerViewModels.Add(
                     new StickerViewModel(
+                        _albumId,
                         stickerNumber,
                         isCollected: isCollected
                     )
