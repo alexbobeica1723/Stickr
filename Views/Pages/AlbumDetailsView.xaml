@@ -66,6 +66,9 @@
 
             </CarouselView>
             
+            <Button Text="Lists"
+                    Command="{Binding OpenStatsCommand}"/>
+            
             <Button
                 Text="Add test stickers (3, 5, 7)"
                 Command="{Binding AddTestStickersCommand}" />

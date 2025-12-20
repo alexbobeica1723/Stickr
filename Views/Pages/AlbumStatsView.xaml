@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Stickr.ViewModels.Pages"
+             xmlns:models="clr-namespace:Stickr.Models"
+             x:Class="Stickr.Views.Pages.AlbumStatsView"
+             x:DataType="pages:AlbumStatsViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="24">
+
+            <!-- Missing -->
+            <Label Text="Missing Stickers"
+                   FontSize="18"
+                   FontAttributes="Bold" />
+
+            <CollectionView ItemsSource="{Binding MissingStickers}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="5"
+                                     Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="8"
+                               CornerRadius="6"
+                               BorderColor="Red">
+                            <Label Text="{Binding .}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Copy missing"
+                    Command="{Binding CopyMissingCommand}" />
+
+            <!-- Duplicates -->
+            <Label Text="Duplicated Stickers"
+                   FontSize="18"
+                   FontAttributes="Bold" />
+
+            <CollectionView ItemsSource="{Binding DuplicatedStickers}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="4"
+                                     Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DuplicatedStickerItem">
+                        <Frame Padding="8"
+                               CornerRadius="6"
+                               BorderColor="Orange">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Number}" />
+                                <Label Text="{Binding Count, StringFormat='x{0}'}"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Copy duplicates"
+                    Command="{Binding CopyDuplicatesCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

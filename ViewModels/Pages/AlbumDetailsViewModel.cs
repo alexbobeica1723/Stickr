@@ -7,6 +7,8 @@ using Stickr.Models;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
 using Stickr.ViewModels.Elements;
+using Stickr.Views.Pages;
+using Page = Stickr.Models.Page;
 
 namespace Stickr.ViewModels.Pages;
 
@@ -123,6 +125,17 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         
         var album = await _albumsRepository.GetByCollectionIdAsync(_albumId);
         RebuildPages(album);
+    }
+    
+    [RelayCommand]
+    private async Task OpenStatsAsync()
+    {
+        await Shell.Current.GoToAsync(
+            nameof(AlbumStatsView),
+            new Dictionary<string, object>
+            {
+                ["albumId"] = _albumId
+            });
     }
     
     public ObservableCollection<AlbumPageViewModel> Pages { get; }

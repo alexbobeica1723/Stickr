@@ -19,6 +19,11 @@ public class AlbumsRepository
         => _db.Table<Album>()
             .Where(a => a.CollectionId == collectionId)
             .FirstOrDefaultAsync();
+    
+    public Task<Album?> GetByIdAsync(string albumId)
+        => _db.Table<Album>()
+            .Where(a => a.Id == albumId)
+            .FirstOrDefaultAsync();
 
     public Task InsertAsync(Album album) => _db.InsertAsync(album);
 

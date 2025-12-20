@@ -11,5 +11,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(AlbumDetailsView), typeof(AlbumDetailsView));
         Routing.RegisterRoute(nameof(CreateCollectionView), typeof(CreateCollectionView));
         Routing.RegisterRoute(nameof(StickerDetailsView), typeof(StickerDetailsView));
+        Routing.RegisterRoute(nameof(AlbumStatsView), typeof(AlbumStatsView));
     }
 }
