@@ -74,55 +74,75 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     {
         if (string.IsNullOrWhiteSpace(_albumId))
             return;
-        
-        var foundStickers = new List<string>();
+
+        var detectedNumbers = new List<int>();
+
         try
         {
             var hasPermission = await CheckCameraPermission();
             if (!hasPermission)
-            {
                 return;
-            }
-            
+
             var pickResult = await MediaPicker.CapturePhotoAsync();
+            if (pickResult == null)
+                return;
 
-            if (pickResult != null)
+            await using var imageAsStream = await pickResult.OpenReadAsync();
+            var imageAsBytes = new byte[imageAsStream.Length];
+            await imageAsStream.ReadAsync(imageAsBytes);
+
+            var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(imageAsBytes);
+
+            if (!ocrResult.Success)
+                return;
+
+            var codes = ExtractValidStickerCodes(ocrResult.Lines);
+
+            foreach (var code in codes)
             {
-                await using var imageAsStream = await pickResult.OpenReadAsync();
-                var imageAsBytes = new byte[imageAsStream.Length];
-                await imageAsStream.ReadAsync(imageAsBytes);
-                
-                var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(imageAsBytes);
-
-                var results = ocrResult.Elements;
-
-                if (ocrResult.Success)
-                {
-                    foundStickers.AddRange(ExtractValidStickerCodes(ocrResult.Lines));
-                }
+                if (int.TryParse(code, out var number))
+                    detectedNumbers.Add(number);
             }
         }
-        catch(Exception ex)
+        catch
         {
+            return;
         }
-        
-        var newStickers = new List<Sticker>();
-        foreach (var sticker in foundStickers)
-        {
-            var stickerNumber = Int32.TryParse(sticker, out var number) ? number : 0;
 
-            if (stickerNumber != 0)
-            {
-                newStickers.Add(new Sticker { AlbumId = _albumId, Number = stickerNumber });
-            }
+        if (!detectedNumbers.Any())
+        {
+            await Shell.Current.DisplayAlert(
+                "No stickers found",
+                "No valid sticker numbers were detected.",
+                "OK");
+            return;
         }
+
+        // 🔹 PREVIEW LIST (sorted, duplicates kept)
+        var previewText = string.Join(", ", detectedNumbers.OrderBy(n => n));
+
+        var confirm = await Shell.Current.DisplayAlert(
+            "Add stickers?",
+            $"The following stickers will be added:\n\n{previewText}",
+            "OK",
+            "Cancel");
+
+        if (!confirm)
+            return;
+
+        // 🔹 Persist
+        var newStickers = detectedNumbers
+            .Select(n => new Sticker
+            {
+                AlbumId = _albumId,
+                Number = n
+            })
+            .ToList();
 
         await _stickersRepository.InsertManyAsync(newStickers);
 
-        // Update UI immediately
-        foreach (var sticker in newStickers)
-            Stickers.Add(sticker);
-        
+        // 🔹 Update UI
+        foreach (var sticker in newStickers)Stickers.Add(sticker);
         var album = await _albumsRepository.GetByCollectionIdAsync(_albumId);
         RebuildPages(album);
     }

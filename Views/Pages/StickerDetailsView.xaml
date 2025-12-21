@@ -24,7 +24,7 @@
             HorizontalOptions="Center" />
 
         <Button
-            Text="Add duplicate"
+            Text="Add"
             Command="{Binding AddStickerCommand}" />
 
         <Button

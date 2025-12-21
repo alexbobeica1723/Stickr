@@ -20,7 +20,7 @@ public class AppInitializationService
     public async Task InitializeAsync()
     {
         await _databaseService.InitializeAsync();
-        await _seedService.SeedAsync();
+        //await _seedService.SeedAsync();
 
         _readyTcs.TrySetResult(true);
     }
