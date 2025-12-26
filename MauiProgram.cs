@@ -30,6 +30,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
         builder.Services.AddSingleton<IDisplayAlertService, DisplayAlertService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
+        builder.Services.AddSingleton<IPermissionsService, PermissionsService>();
         builder.Services.AddSingleton<Services.Interfaces.IOcrService, OcrService>();
         
         // Repositories

@@ -17,6 +17,7 @@ namespace Stickr.ViewModels.Pages;
 public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
     private string _stickerPattern;
+    private bool _hasCameraPermission;
     
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -28,31 +29,9 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     private readonly IDisplayAlertService _displayAlertService;
     private readonly INavigationService _navigationService;
+    private readonly IPermissionsService _permissionsService;
     private readonly IAlbumsRepository _albumsRepository;
     private readonly IStickersRepository _stickersRepository;
-    
-    [RelayCommand]
-    private async Task AddTestStickersAsync()
-    {
-        if (string.IsNullOrWhiteSpace(_albumId))
-            return;
-
-        var newStickers = new[]
-        {
-            new Sticker { AlbumId = _albumId, Number = 3 },
-            new Sticker { AlbumId = _albumId, Number = 5 },
-            new Sticker { AlbumId = _albumId, Number = 7 }
-        };
-
-        await _stickersRepository.InsertMultipleStickersAsync(newStickers);
-
-        // Update UI immediately
-        foreach (var sticker in newStickers)
-            Stickers.Add(sticker);
-        
-        var album =  await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
-        RebuildPages(album);
-    }
     
     [RelayCommand]
     private async Task ScanStickersAsync()
@@ -64,9 +43,17 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
         try
         {
-            var hasPermission = await CheckCameraPermission();
-            if (!hasPermission)
-                return;
+            if (!_hasCameraPermission)
+            {
+                var status = await _permissionsService.RequestCameraPermissionAsync();
+                
+                if (status != PermissionStatus.Granted)
+                {
+                    return;
+                }
+                
+                _hasCameraPermission = true;
+            }
 
             var pickResult = await MediaPicker.CapturePhotoAsync();
             if (pickResult == null)
@@ -140,19 +127,20 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             _albumId);
     }
     
-    public ObservableCollection<AlbumPageViewModel> Pages { get; }
-        = new();
+    public ObservableCollection<AlbumPageViewModel> Pages { get; } = [];
 
     [ObservableProperty] private string _imagePath;
 
     public AlbumDetailsViewModel(
         IDisplayAlertService displayAlertService,
         INavigationService navigationService,
+        IPermissionsService permissionsService,
         IAlbumsRepository albumsRepository,
         IStickersRepository stickersRepository)
     {
         _displayAlertService = displayAlertService;
         _navigationService = navigationService;
+        _permissionsService = permissionsService;
         _albumsRepository = albumsRepository;
         _stickersRepository = stickersRepository;
     }
@@ -175,6 +163,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
         IsBusy = true;
 
+        _hasCameraPermission = await CheckCameraPermission();
         var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
         if (album == null)
             return;
@@ -199,11 +188,8 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     private async Task<bool> CheckCameraPermission()
     {
-        var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-        if (status != PermissionStatus.Granted)
-        {
-            status = await Permissions.RequestAsync<Permissions.Camera>();
-        }
+        var status = await _permissionsService.CheckCameraPermissionAsync();
+        
         return status == PermissionStatus.Granted;
     }
     
