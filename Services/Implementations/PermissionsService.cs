@@ -4,6 +4,8 @@ namespace Stickr.Services.Implementations;
 
 public class PermissionsService : IPermissionsService
 {
+    #region Public Methods
+    
     public async Task<PermissionStatus> CheckCameraPermissionAsync()
     {
         return await Permissions.CheckStatusAsync<Permissions.Camera>();
@@ -13,4 +15,6 @@ public class PermissionsService : IPermissionsService
     {
         return await Permissions.RequestAsync<Permissions.Camera>();
     }
+    
+    #endregion
 }

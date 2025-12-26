@@ -7,14 +7,22 @@ namespace Stickr.Repositories.Implementations;
 
 public class CollectionsRepository : ICollectionsRepository
 {
-    private readonly SQLiteAsyncConnection _db;
+    #region Constructor & Dependencies
+    
+    private readonly SQLiteAsyncConnection _databaseConnection;
 
     public CollectionsRepository(IDatabaseService dbService)
     {
-        _db = dbService.GetConnection();
+        _databaseConnection = dbService.GetConnection();
     }
+    
+    #endregion
 
-    public Task<List<Collection>> GetCollectionsAsync() => _db.Table<Collection>().ToListAsync();
-    public Task InsertCollectionAsync(Collection collection) => _db.InsertAsync(collection);
-    public Task<int> UpdateCollectionAsync(Collection collection) => _db.InsertOrReplaceAsync(collection);
+    #region Public Methods
+    
+    public Task<List<Collection>> GetCollectionsAsync() => _databaseConnection.Table<Collection>().ToListAsync();
+    public Task InsertCollectionAsync(Collection collection) => _databaseConnection.InsertAsync(collection);
+    public Task<int> UpdateCollectionAsync(Collection collection) => _databaseConnection.InsertOrReplaceAsync(collection);
+    
+    #endregion
 }

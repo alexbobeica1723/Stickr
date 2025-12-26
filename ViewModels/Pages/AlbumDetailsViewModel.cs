@@ -9,35 +9,41 @@ using Stickr.Repositories.Interfaces;
 using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Base;
 using Stickr.ViewModels.Elements;
-using Stickr.Views.Pages;
-using Page = Stickr.Models.Page;
 
 namespace Stickr.ViewModels.Pages;
 
 public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
+    #region Fields
+    
+    private string _albumId = string.Empty;
     private string _stickerPattern;
     private bool _hasCameraPermission;
     
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (query.TryGetValue("albumId", out var value))
-        {
-            _albumId = value.ToString() ?? string.Empty;
-        }
-    }
+    #endregion
     
-    private readonly IDisplayAlertService _displayAlertService;
-    private readonly INavigationService _navigationService;
-    private readonly IPermissionsService _permissionsService;
-    private readonly IAlbumsRepository _albumsRepository;
-    private readonly IStickersRepository _stickersRepository;
+    #region Properties
+    
+    public ObservableCollection<AlbumPageViewModel> Pages { get; } = [];
+    [ObservableProperty] private string _imagePath;
+    [ObservableProperty]
+    private string _title;
+    [ObservableProperty]
+    private string _description;
+    [ObservableProperty]
+    private ObservableCollection<Sticker> stickers = new();
+    
+    #endregion
+    
+    #region Commands
     
     [RelayCommand]
     private async Task ScanStickersAsync()
     {
         if (string.IsNullOrWhiteSpace(_albumId))
+        {
             return;
+        }
 
         var detectedNumbers = new List<int>();
 
@@ -56,8 +62,10 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             }
 
             var pickResult = await MediaPicker.CapturePhotoAsync();
-            if (pickResult == null)
-                return;
+            if (pickResult is null)
+            {
+                return;  
+            }
 
             await using var imageAsStream = await pickResult.OpenReadAsync();
             var imageAsBytes = new byte[imageAsStream.Length];
@@ -66,14 +74,18 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(imageAsBytes);
 
             if (!ocrResult.Success)
+            {
                 return;
+            }
 
             var codes = ExtractValidStickerCodes(ocrResult.Lines);
 
             foreach (var code in codes)
             {
                 if (int.TryParse(code, out var number))
-                    detectedNumbers.Add(number);
+                {
+                    detectedNumbers.Add(number); 
+                }
             }
         }
         catch
@@ -86,6 +98,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             await _displayAlertService.DisplayCancelOnlyAlert("No stickers found",
                 "No valid sticker numbers were detected.",
                 "OK");
+            
             return;
         }
 
@@ -99,9 +112,10 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             "Cancel");
 
         if (!confirm)
+        {
             return;
-
-        // 🔹 Persist
+        }
+        
         var newStickers = detectedNumbers
             .Select(n => new Sticker
             {
@@ -111,10 +125,10 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             .ToList();
 
         await _stickersRepository.InsertMultipleStickersAsync(newStickers);
-
-        // 🔹 Update UI
+        
         foreach (var sticker in newStickers)Stickers.Add(sticker);
         var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
+        
         RebuildPages(album);
     }
     
@@ -127,9 +141,15 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             _albumId);
     }
     
-    public ObservableCollection<AlbumPageViewModel> Pages { get; } = [];
-
-    [ObservableProperty] private string _imagePath;
+    #endregion
+    
+    #region Constructors & Dependencies
+    
+    private readonly IDisplayAlertService _displayAlertService;
+    private readonly INavigationService _navigationService;
+    private readonly IPermissionsService _permissionsService;
+    private readonly IAlbumsRepository _albumsRepository;
+    private readonly IStickersRepository _stickersRepository;
 
     public AlbumDetailsViewModel(
         IDisplayAlertService displayAlertService,
@@ -144,29 +164,35 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         _albumsRepository = albumsRepository;
         _stickersRepository = stickersRepository;
     }
-
-    private string _albumId = string.Empty;
-
-    [ObservableProperty]
-    private string _title;
-
-    [ObservableProperty]
-    private string _description;
-
-    [ObservableProperty]
-    private ObservableCollection<Sticker> stickers = new();
+    
+    #endregion
+    
+    #region Public Methods
+    
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("albumId", out var value))
+        {
+            _albumId = value.ToString() ?? string.Empty;
+        }
+    }
 
     public override async Task InitializeDataAsync()
     {
         if (string.IsNullOrWhiteSpace(_albumId))
-            return;
+        {
+            return; 
+        }
 
         IsBusy = true;
-
+        
         _hasCameraPermission = await CheckCameraPermission();
         var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
-        if (album == null)
+
+        if (album is null)
+        {
             return;
+        }
 
         Title = album.Title;
         ImagePath = album.Image;
@@ -179,6 +205,10 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
         IsBusy = false;
     }
+    
+    #endregion
+    
+    #region Private Methods
     
     private async Task UpdateStickersAsync()
     {
@@ -209,11 +239,13 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     private void RebuildPages(Album? album)
     {
-        if (album == null) return;
-        // Clear existing pages so CarouselView refreshes
+        if (album is null)
+        {
+            return;
+        }
+        
         Pages.Clear();
-
-        // Build a fast lookup: sticker number -> how many collected
+        
         var collectedStickerCounts = Stickers
             .GroupBy(s => s.Number)
             .ToDictionary(g => g.Key, g => g.Count());
@@ -222,7 +254,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         {
             var stickerViewModels = new List<StickerViewModel>();
 
-            for (int stickerNumber = page.FirstSticker;
+            for (var stickerNumber = page.FirstSticker;
                  stickerNumber <= page.LastSticker;
                  stickerNumber++)
             {
@@ -248,4 +280,6 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             );
         }
     }
+    
+    #endregion
 }

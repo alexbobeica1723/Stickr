@@ -17,7 +17,7 @@
 
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer
-                            Command="{Binding OpenDetailsCommand}" />
+                            Command="{Binding OpenAlbumDetailsCommand}" />
                     </Frame.GestureRecognizers>
 
                     <VerticalStackLayout Spacing="6">

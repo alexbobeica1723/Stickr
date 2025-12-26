@@ -26,12 +26,7 @@ public class Album
     /// </summary>
     public string StickerRegexPattern { get; set; } = string.Empty;
 
-    /// <summary>
-    /// How many stickers the user owns so far
-    /// </summary>
-    public int CollectedStickers { get; set; } = 0;
-
-    public string PagesJson { get; set; } = "[]";
+    private string PagesJson { get; set; } = "[]";
     
     [Ignore]
     public IReadOnlyList<Page> Pages

@@ -7,48 +7,56 @@ namespace Stickr.Repositories.Implementations;
 
 public class StickersRepository : IStickersRepository
 {
-    private readonly SQLiteAsyncConnection _db;
+    #region Constructor & Dependencies
+    
+    private readonly SQLiteAsyncConnection _databaseConnection;
 
     public StickersRepository(IDatabaseService databaseService)
     {
-        _db = databaseService.GetConnection();
+        _databaseConnection = databaseService.GetConnection();
     }
+    
+    #endregion
+    
+    #region Public Methods
 
     public Task<List<Sticker>> GetStickersByAlbumIdAsync(string albumId)
-        => _db.Table<Sticker>()
+        => _databaseConnection.Table<Sticker>()
             .Where(s => s.AlbumId == albumId)
             .OrderBy(s => s.Number)
             .ToListAsync();
 
-    public Task InsertStickerAsync(Sticker sticker)
-        => _db.InsertAsync(sticker);
+    public Task InsertStickerAsync(Sticker sticker) => _databaseConnection.InsertAsync(sticker);
 
-    public Task InsertMultipleStickersAsync(IEnumerable<Sticker> stickers)
-        => _db.InsertAllAsync(stickers);
+    public Task InsertMultipleStickersAsync(IEnumerable<Sticker> stickers) 
+        => _databaseConnection.InsertAllAsync(stickers);
 
     public Task<int> CountStickersAsync(string albumId, int number)
-        => _db.Table<Sticker>()
+        => _databaseConnection.Table<Sticker>()
             .Where(s => s.AlbumId == albumId && s.Number == number)
             .CountAsync();
     
     public Task<List<Sticker>> GetStickersByAlbumAndNumberAsync(string albumId, int number)
-        => _db.Table<Sticker>()
+        => _databaseConnection.Table<Sticker>()
             .Where(s => s.AlbumId == albumId && s.Number == number)
             .OrderBy(s => s.AddedAt)
             .ToListAsync();
     
-    public async Task<bool> DeleteDuplicateStickerAsync(string albumId, int number)
+    public async Task<bool> DeleteDuplicatedStickerAsync(string albumId, int number)
     {
         var stickers = await GetStickersByAlbumAndNumberAsync(albumId, number);
 
-        // Rule: cannot delete if only one exists
+        // Rule: don't delete if only one sticker exists as it is considered as already added to the album
         if (stickers.Count <= 1)
+        {
             return false;
-
-        // Delete ONE duplicate (oldest or newest, your choice)
+        }
+        
         var stickerToDelete = stickers.Last();
-        await _db.DeleteAsync(stickerToDelete);
+        await _databaseConnection.DeleteAsync(stickerToDelete);
 
         return true;
     }
+    
+    #endregion
 }

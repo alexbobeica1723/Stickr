@@ -9,7 +9,7 @@ using Stickr.Views.Pages;
 
 namespace Stickr.ViewModels;
 
-public partial class CollectionsViewModel : BasePageViewModel
+public partial class CollectionsViewModel : BaseTabViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly ICollectionsRepository _collectionsRepository;

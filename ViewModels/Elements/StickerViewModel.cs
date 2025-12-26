@@ -8,12 +8,16 @@ namespace Stickr.ViewModels.Elements;
 
 public partial class StickerViewModel : BaseViewModel
 {
-    private readonly INavigationService _navigationService;
+    #region Properties
+    
     public int StickerNumber { get; }
     private string AlbumId { get; }
-
     [ObservableProperty]
     private bool isCollected;
+    
+    #endregion
+
+    #region Commands
 
     [RelayCommand]
     private async Task NavigateToDetails()
@@ -26,6 +30,12 @@ public partial class StickerViewModel : BaseViewModel
                 [NavigationParameters.AlbumId] = AlbumId
             });
     }
+    
+    #endregion
+    
+    #region Constructor & Dependencies
+    
+    private readonly INavigationService _navigationService;
 
     public StickerViewModel(INavigationService navigationService, 
         string albumId,
@@ -37,4 +47,6 @@ public partial class StickerViewModel : BaseViewModel
         StickerNumber = stickerNumber;
         IsCollected = isCollected;
     }
+    
+    #endregion
 }

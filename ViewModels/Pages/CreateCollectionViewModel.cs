@@ -76,9 +76,8 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
             Description = Description,
             Image = ImagePath,
             TotalStickers = Pages.Last().LastSticker,
-            StickerRegexPattern = string.IsNullOrWhiteSpace(StickerRegex)
-                ? @"^\d{1,3}$" // default
-                : StickerRegex,
+            // Default regex is defined for numerical values (values from 1 to 999)
+            StickerRegexPattern = @"^\d{1,3}$",
             Pages = Pages.ToList(),
             IsCollecting = false
         };

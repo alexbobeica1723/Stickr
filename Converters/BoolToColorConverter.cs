@@ -2,6 +2,7 @@ using System.Globalization;
 
 namespace Stickr.Converters;
 
+// TODO REFACTOR
 public class BoolToColorConverter : IValueConverter
 {
     public Color TrueColor { get; set; } = Colors.Green;

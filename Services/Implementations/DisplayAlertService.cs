@@ -4,6 +4,8 @@ namespace Stickr.Services.Implementations;
 
 public class DisplayAlertService : IDisplayAlertService
 {
+    #region Public Methods
+    
     public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
     {
         return await Shell.Current.DisplayAlert(title, message, accept, cancel);
@@ -13,4 +15,6 @@ public class DisplayAlertService : IDisplayAlertService
     {
         await Shell.Current.DisplayAlert(title, message, cancel);
     }
+    
+    #endregion
 }

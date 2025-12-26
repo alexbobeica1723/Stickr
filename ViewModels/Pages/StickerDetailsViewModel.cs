@@ -91,7 +91,7 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
         if (!CanDelete)
             return;
 
-        await _stickersRepository.DeleteDuplicateStickerAsync(AlbumId, Number);
+        await _stickersRepository.DeleteDuplicatedStickerAsync(AlbumId, Number);
 
         DuplicatesCount--;
         OnPropertyChanged(nameof(CanDelete));

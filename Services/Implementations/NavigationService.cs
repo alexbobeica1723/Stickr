@@ -4,6 +4,8 @@ namespace Stickr.Services.Implementations;
 
 public class NavigationService : INavigationService
 {
+    #region Public Methods
+    
     public async Task NavigateAsync(string route)
     {
         await Shell.Current.GoToAsync(route);
@@ -23,4 +25,6 @@ public class NavigationService : INavigationService
     {
         await Shell.Current.GoToAsync("..");
     }
+    
+    #endregion
 }

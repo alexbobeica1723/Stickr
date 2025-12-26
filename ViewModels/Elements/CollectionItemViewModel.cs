@@ -10,19 +10,28 @@ namespace Stickr.ViewModels.Elements;
 
 public partial class CollectionItemViewModel : BaseViewModel
 {
-    private readonly ICollectionsRepository _collectionsRepository;
-    private readonly IAlbumsRepository _albumsRepository;
-
+    #region Properties
+    
     public Collection Model { get; }
-
     [ObservableProperty]
     private bool isCollecting;
 
     public string StatusText =>
         IsCollecting ? "Status: collecting" : "Status: not started";
+    
+    #endregion
 
+    #region Commands
+    
     public IAsyncRelayCommand StartCollectingCommand { get; }
+    
+    #endregion
 
+    #region Constructor & Dependencies
+    
+    private readonly ICollectionsRepository _collectionsRepository;
+    private readonly IAlbumsRepository _albumsRepository;
+    
     public CollectionItemViewModel(
         Collection model,
         ICollectionsRepository collectionsRepository,
@@ -33,9 +42,12 @@ public partial class CollectionItemViewModel : BaseViewModel
         _albumsRepository = albumsRepository;
 
         isCollecting = model.IsCollecting;
-
         StartCollectingCommand = new AsyncRelayCommand(StartCollectingAsync);
     }
+    
+    #endregion
+    
+    #region Private Methods
 
     partial void OnIsCollectingChanged(bool value)
     {
@@ -67,4 +79,6 @@ public partial class CollectionItemViewModel : BaseViewModel
         // 🔔 Notify My Albums
         WeakReferenceMessenger.Default.Send(new AlbumStartedMessage());
     }
+    
+    #endregion
 }

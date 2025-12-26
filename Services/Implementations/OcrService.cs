@@ -5,6 +5,8 @@ namespace Stickr.Services.Implementations;
 
 public class OcrService : IOcrService
 {
+    #region Public Methods
+    
     public async Task<string> RecognizeTextAsync(byte[] imageBytes)
     {
         var result = await OcrPlugin.Default.RecognizeTextAsync(imageBytes);
@@ -16,4 +18,6 @@ public class OcrService : IOcrService
 
         return string.Join(" ", result.Elements.Select(e => e.Text));
     }
+    
+    #endregion
 }

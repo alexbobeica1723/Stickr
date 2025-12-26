@@ -7,19 +7,26 @@ namespace Stickr.Repositories.Implementations;
 
 public class AlbumsRepository : IAlbumsRepository
 {
-    private readonly SQLiteAsyncConnection _db;
-
+    #region Constructor & Dependencies
+    
+    private readonly SQLiteAsyncConnection _databaseConnection;
+    
     public AlbumsRepository(IDatabaseService dbService)
     {
-        _db = dbService.GetConnection();
+        _databaseConnection = dbService.GetConnection();
     }
+    
+    #endregion
 
-    public Task<List<Album>> GetAlbumsAsync() => _db.Table<Album>().ToListAsync();
+    #region Public Methods
 
-    public Task<Album?> GetAlbumByCollectionIdAsync(string collectionId)
-        => _db.Table<Album>()
-            .Where(a => a.CollectionId == collectionId)
-            .FirstOrDefaultAsync();
+    public Task<List<Album>> GetAlbumsAsync() => _databaseConnection.Table<Album>().ToListAsync();
 
-    public Task InsertAlbumAsync(Album album) => _db.InsertAsync(album);
+    public Task<Album> GetAlbumByCollectionIdAsync(string collectionId)
+        => _databaseConnection.Table<Album>()
+            .Where(a => a.CollectionId == collectionId).FirstOrDefaultAsync();
+
+    public Task InsertAlbumAsync(Album album) => _databaseConnection.InsertAsync(album);
+    
+    #endregion
 }

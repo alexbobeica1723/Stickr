@@ -11,7 +11,7 @@ using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels;
 
-public partial class MyAlbumsViewModel : BasePageViewModel
+public partial class MyAlbumsViewModel : BaseTabViewModel
 {
     private readonly IAlbumsRepository _albumsRepository;
     private readonly INavigationService _navigationService;

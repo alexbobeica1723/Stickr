@@ -6,19 +6,33 @@ namespace Stickr.Services.Implementations;
 
 public class DatabaseService : IDatabaseService
 {
-    private readonly SQLiteAsyncConnection _db;
+    #region Fields
+
+    private const string DatabaseName = "stickr.db3";
+    
+    #endregion
+    
+    #region Constructor & Dependencies
+    
+    private readonly SQLiteAsyncConnection _databaseConnection;
 
     public DatabaseService()
     {
-        _db = new SQLiteAsyncConnection("stickr.db3");
+        _databaseConnection = new SQLiteAsyncConnection(DatabaseName);
     }
+    
+    #endregion
+
+    #region Public Methods
 
     public async Task InitializeAsync()
     {
-        await _db.CreateTableAsync<Collection>();
-        await _db.CreateTableAsync<Album>();
-        await _db.CreateTableAsync<Sticker>(); 
+        await _databaseConnection.CreateTableAsync<Collection>();
+        await _databaseConnection.CreateTableAsync<Album>();
+        await _databaseConnection.CreateTableAsync<Sticker>(); 
     }
 
-    public SQLiteAsyncConnection GetConnection() => _db;
+    public SQLiteAsyncConnection GetConnection() => _databaseConnection;
+    
+    #endregion
 }
