@@ -26,9 +26,10 @@ public static class MauiProgram
             });
 
         // Services
-        builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
         builder.Services.AddSingleton<IAppInitializationService, AppInitializationService>();
+        builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
         builder.Services.AddSingleton<IDisplayAlertService, DisplayAlertService>();
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddSingleton<Services.Interfaces.IOcrService, OcrService>();
         
         // Repositories

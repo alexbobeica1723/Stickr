@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
-using Page = Stickr.Models.Page;
 
 namespace Stickr.ViewModels.Pages;
 

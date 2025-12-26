@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
+using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Base;
 using Page =  Stickr.Models.Page;
 
@@ -10,11 +11,14 @@ namespace Stickr.ViewModels.Pages;
 
 public partial class CreateCollectionViewModel : BaseModalPageViewModel
 {
+    private readonly INavigationService _navigationService;
     private readonly ICollectionsRepository _collectionsRepository;
 
     public CreateCollectionViewModel(
+        INavigationService navigationService,
         ICollectionsRepository collectionsRepository)
     {
+        _navigationService = navigationService;
         _collectionsRepository = collectionsRepository;
     }
 
@@ -81,7 +85,7 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
 
         await _collectionsRepository.InsertCollectionAsync(collection);
 
-        await Shell.Current.GoToAsync("..");
+        await _navigationService.GoBackAsync();
     }
 
     public ObservableCollection<Page> Pages { get; } = new();

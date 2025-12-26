@@ -1,19 +1,20 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Stickr.Constants;
 using Stickr.Messages;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
 using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Base;
 using Stickr.ViewModels.Elements;
-using Stickr.Views.Pages;
 
 namespace Stickr.ViewModels;
 
 public partial class MyAlbumsViewModel : BasePageViewModel
 {
     private readonly IAlbumsRepository _albumsRepository;
+    private readonly INavigationService _navigationService;
 
     public ObservableCollection<AlbumItemViewModel> Albums { get; } = new();
     
@@ -21,10 +22,12 @@ public partial class MyAlbumsViewModel : BasePageViewModel
 
     public MyAlbumsViewModel(
         IAppInitializationService appInitializationService,
+        INavigationService navigationService,
         IAlbumsRepository albumsRepository)
         : base(appInitializationService)
     {
         _albumsRepository = albumsRepository;
+        _navigationService = navigationService;
         WeakReferenceMessenger.Default.Register<AlbumStartedMessage>(this, Receive);
         OpenAlbumCommand = new Command<Album>(OnOpenAlbum);
     }
@@ -43,7 +46,7 @@ public partial class MyAlbumsViewModel : BasePageViewModel
 
         foreach (var album in albums)
         {
-            Albums.Add(new AlbumItemViewModel(album));
+            Albums.Add(new AlbumItemViewModel(_navigationService, album));
         }
 
         IsBusy = false;
@@ -51,10 +54,12 @@ public partial class MyAlbumsViewModel : BasePageViewModel
     
     private async void OnOpenAlbum(Album album)
     {
-        if (album == null)
+        if (album is null)
             return;
 
-        await Shell.Current.GoToAsync(
-            $"{nameof(AlbumDetailsView)}?albumId={album.CollectionId}");
+        await _navigationService.NavigateWithOneParameterAsync(
+            NavigationRoutes.AlbumDetailsPage,
+            NavigationParameters.AlbumId,
+            album.CollectionId);
     }
 }

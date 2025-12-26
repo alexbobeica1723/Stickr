@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Plugin.Maui.OCR;
+using Stickr.Constants;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
 using Stickr.Services.Interfaces;
@@ -26,6 +27,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     }
     
     private readonly IDisplayAlertService _displayAlertService;
+    private readonly INavigationService _navigationService;
     private readonly IAlbumsRepository _albumsRepository;
     private readonly IStickersRepository _stickersRepository;
     
@@ -132,12 +134,10 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     [RelayCommand]
     private async Task OpenStatsAsync()
     {
-        await Shell.Current.GoToAsync(
-            nameof(AlbumStatsView),
-            new Dictionary<string, object>
-            {
-                ["albumId"] = _albumId
-            });
+        await _navigationService.NavigateWithOneParameterAsync(
+            NavigationRoutes.AlbumStatsPage,
+            NavigationParameters.AlbumId,
+            _albumId);
     }
     
     public ObservableCollection<AlbumPageViewModel> Pages { get; }
@@ -147,10 +147,12 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
     public AlbumDetailsViewModel(
         IDisplayAlertService displayAlertService,
+        INavigationService navigationService,
         IAlbumsRepository albumsRepository,
         IStickersRepository stickersRepository)
     {
         _displayAlertService = displayAlertService;
+        _navigationService = navigationService;
         _albumsRepository = albumsRepository;
         _stickersRepository = stickersRepository;
     }
@@ -244,6 +246,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
                 stickerViewModels.Add(
                     new StickerViewModel(
+                        _navigationService,
                         _albumId,
                         stickerNumber,
                         isCollected: isCollected

@@ -1,12 +1,14 @@
 using System.Windows.Input;
+using Stickr.Constants;
 using Stickr.Models;
+using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Base;
-using Stickr.Views.Pages;
 
 namespace Stickr.ViewModels.Elements;
 
 public class AlbumItemViewModel : BaseViewModel
 {
+    private readonly INavigationService _navigationService;
     public Album Album { get; }
 
     public string Title => Album.Title;
@@ -14,8 +16,9 @@ public class AlbumItemViewModel : BaseViewModel
 
     public ICommand OpenDetailsCommand { get; }
 
-    public AlbumItemViewModel(Album album)
+    public AlbumItemViewModel(INavigationService navigationService, Album album)
     {
+        _navigationService = navigationService;
         Album = album;
 
         OpenDetailsCommand = new Command(OnOpenDetails);
@@ -23,7 +26,7 @@ public class AlbumItemViewModel : BaseViewModel
 
     private async void OnOpenDetails()
     {
-        await Shell.Current.GoToAsync(
-            $"{nameof(AlbumDetailsView)}?albumId={Album.CollectionId}");
+        await _navigationService.NavigateWithOneParameterAsync(NavigationRoutes.AlbumDetailsPage,
+            NavigationParameters.AlbumId, Album.CollectionId);
     }
 }

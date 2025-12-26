@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
+using Stickr.Constants;
 using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 using Stickr.Services.Interfaces;
@@ -10,23 +11,26 @@ namespace Stickr.ViewModels;
 
 public partial class CollectionsViewModel : BasePageViewModel
 {
+    private readonly INavigationService _navigationService;
     private readonly ICollectionsRepository _collectionsRepository;
     private readonly IAlbumsRepository _albumsRepository;
     
     [RelayCommand]
     private async Task CreateCollectionAsync()
     {
-        await Shell.Current.GoToAsync(nameof(CreateCollectionView));
+        await _navigationService.NavigateAsync(NavigationRoutes.CreateCollectionPage);
     }
 
     public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
 
     public CollectionsViewModel(
         IAppInitializationService appInitializationService,
+        INavigationService navigationService,
         ICollectionsRepository collectionsRepository,
         IAlbumsRepository albumsRepository)
         : base(appInitializationService)
     {
+        _navigationService = navigationService;
         _collectionsRepository = collectionsRepository;
         _albumsRepository = albumsRepository;
     }
