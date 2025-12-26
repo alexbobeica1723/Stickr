@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Plugin.Maui.OCR;
 using Stickr.Services.Implementations;
+using Stickr.Services.Interfaces;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels;
 using Stickr.ViewModels.Pages;
@@ -32,7 +33,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<StickersRepository>();
         builder.Services.AddSingleton<SeedService>();
         builder.Services.AddSingleton<AppInitializationService>();
-        builder.Services.AddSingleton<Stickr.Services.Interfaces.IOcrService, OcrService>();
+        builder.Services.AddSingleton<Services.Interfaces.IOcrService, OcrService>();
+        builder.Services.AddSingleton<IDisplayAlertService, DisplayAlertService>();
 
         // ViewModels
         builder.Services.AddSingleton<CollectionsViewModel>();

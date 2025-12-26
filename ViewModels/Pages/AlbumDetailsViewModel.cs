@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Plugin.Maui.OCR;
 using Stickr.Models;
+using Stickr.Services.Interfaces;
 using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
 using Stickr.ViewModels.Elements;
@@ -24,8 +25,8 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         }
     }
     
+    private readonly IDisplayAlertService _displayAlertService;
     private readonly AlbumsRepository _albumsRepository;
-    private readonly CollectionsRepository _collectionsRepository;
     private readonly StickersRepository _stickersRepository;
     
     [RelayCommand]
@@ -49,24 +50,6 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         
         var album =  await _albumsRepository.GetByCollectionIdAsync(_albumId);
         RebuildPages(album);
-    }
-    
-    [RelayCommand]
-    private async Task DeleteStickerFiveAsync()
-    {
-        var deleted = await _stickersRepository
-            .DeleteOneDuplicateAsync(_albumId, 5);
-
-        if (!deleted)
-        {
-            await Shell.Current.DisplayAlert(
-                "Not allowed",
-                "You can only delete duplicated stickers.",
-                "OK");
-            return;
-        }
-
-        await UpdateStickersAsync();
     }
     
     [RelayCommand]
@@ -109,10 +92,9 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             return;
         }
 
-        if (!detectedNumbers.Any())
+        if (detectedNumbers.Count == 0)
         {
-            await Shell.Current.DisplayAlert(
-                "No stickers found",
+            await _displayAlertService.DisplayCancelOnlyAlert("No stickers found",
                 "No valid sticker numbers were detected.",
                 "OK");
             return;
@@ -121,7 +103,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         // 🔹 PREVIEW LIST (sorted, duplicates kept)
         var previewText = string.Join(", ", detectedNumbers.OrderBy(n => n));
 
-        var confirm = await Shell.Current.DisplayAlert(
+        var confirm = await _displayAlertService.DisplayAlert(
             "Add stickers?",
             $"The following stickers will be added:\n\n{previewText}",
             "OK",
@@ -164,12 +146,12 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     [ObservableProperty] private string _imagePath;
 
     public AlbumDetailsViewModel(
+        IDisplayAlertService displayAlertService,
         AlbumsRepository albumsRepository,
-        CollectionsRepository collectionsRepository,
         StickersRepository stickersRepository)
     {
+        _displayAlertService = displayAlertService;
         _albumsRepository = albumsRepository;
-        _collectionsRepository = collectionsRepository;
         _stickersRepository = stickersRepository;
     }
 

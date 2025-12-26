@@ -66,9 +66,10 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
             .Where(g => g.Count() > 1)
             .OrderBy(g => g.Key);
 
+        // Subtract 1 at the end because we consider one sticker as already added to the album
         foreach (var g in duplicates)
             DuplicatedStickers.Add(
-                new DuplicatedStickerItem(g.Key, g.Count()));
+                new DuplicatedStickerItem(g.Key, g.Count() - 1));
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
