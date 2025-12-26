@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Stickr.Models;
-using Stickr.Services.Repositories;
+using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 using Page =  Stickr.Models.Page;
 
@@ -10,10 +10,10 @@ namespace Stickr.ViewModels.Pages;
 
 public partial class CreateCollectionViewModel : BaseModalPageViewModel
 {
-    private readonly CollectionsRepository _collectionsRepository;
+    private readonly ICollectionsRepository _collectionsRepository;
 
     public CreateCollectionViewModel(
-        CollectionsRepository collectionsRepository)
+        ICollectionsRepository collectionsRepository)
     {
         _collectionsRepository = collectionsRepository;
     }
@@ -79,7 +79,7 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
             IsCollecting = false
         };
 
-        await _collectionsRepository.InsertAsync(collection);
+        await _collectionsRepository.InsertCollectionAsync(collection);
 
         await Shell.Current.GoToAsync("..");
     }

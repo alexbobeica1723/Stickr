@@ -1,44 +1,45 @@
 using SQLite;
 using Stickr.Models;
-using Stickr.Services.Implementations;
+using Stickr.Repositories.Interfaces;
+using Stickr.Services.Interfaces;
 
-namespace Stickr.Services.Repositories;
+namespace Stickr.Repositories.Implementations;
 
-public class StickersRepository
+public class StickersRepository : IStickersRepository
 {
     private readonly SQLiteAsyncConnection _db;
 
-    public StickersRepository(DatabaseService databaseService)
+    public StickersRepository(IDatabaseService databaseService)
     {
         _db = databaseService.GetConnection();
     }
 
-    public Task<List<Sticker>> GetByAlbumIdAsync(string albumId)
+    public Task<List<Sticker>> GetStickersByAlbumIdAsync(string albumId)
         => _db.Table<Sticker>()
             .Where(s => s.AlbumId == albumId)
             .OrderBy(s => s.Number)
             .ToListAsync();
 
-    public Task InsertAsync(Sticker sticker)
+    public Task InsertStickerAsync(Sticker sticker)
         => _db.InsertAsync(sticker);
 
-    public Task InsertManyAsync(IEnumerable<Sticker> stickers)
+    public Task InsertMultipleStickersAsync(IEnumerable<Sticker> stickers)
         => _db.InsertAllAsync(stickers);
 
-    public Task<int> CountAsync(string albumId, int number)
+    public Task<int> CountStickersAsync(string albumId, int number)
         => _db.Table<Sticker>()
             .Where(s => s.AlbumId == albumId && s.Number == number)
             .CountAsync();
     
-    public Task<List<Sticker>> GetByAlbumAndNumberAsync(string albumId, int number)
+    public Task<List<Sticker>> GetStickersByAlbumAndNumberAsync(string albumId, int number)
         => _db.Table<Sticker>()
             .Where(s => s.AlbumId == albumId && s.Number == number)
             .OrderBy(s => s.AddedAt)
             .ToListAsync();
     
-    public async Task<bool> DeleteOneDuplicateAsync(string albumId, int number)
+    public async Task<bool> DeleteDuplicateStickerAsync(string albumId, int number)
     {
-        var stickers = await GetByAlbumAndNumberAsync(albumId, number);
+        var stickers = await GetStickersByAlbumAndNumberAsync(albumId, number);
 
         // Rule: cannot delete if only one exists
         if (stickers.Count <= 1)
@@ -50,12 +51,4 @@ public class StickersRepository
 
         return true;
     }
-    
-    public Task<Sticker?> GetByIdAsync(string id) =>
-        _db.Table<Sticker>()
-            .Where(s => s.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase))
-            .FirstOrDefaultAsync();
-    
-    public Task DeleteByIdAsync(string id) =>
-        _db.DeleteAsync<Sticker>(id);
 }

@@ -2,8 +2,7 @@ using System.Runtime.InteropServices.JavaScript;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Stickr.Models;
-using Stickr.Services.Implementations;
-using Stickr.Services.Repositories;
+using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels.Pages;
@@ -25,8 +24,8 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
         }
     }
     
-    private readonly StickersRepository _stickersRepository;
-    private readonly AlbumsRepository _albumsRepository;
+    private readonly IStickersRepository _stickersRepository;
+    private readonly IAlbumsRepository? _albumsRepository;
 
     [ObservableProperty]
     private int number;
@@ -43,8 +42,8 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
     public bool CanDelete => DuplicatesCount > 1;
 
     public StickerDetailsViewModel(
-        StickersRepository stickersRepository,
-        AlbumsRepository albumsRepository)
+        IStickersRepository stickersRepository,
+        IAlbumsRepository albumsRepository)
     {
         _stickersRepository = stickersRepository;
         _albumsRepository = albumsRepository;
@@ -55,16 +54,16 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
         IsBusy = true;
 
         // get by albu and number
-        var stickersList = await _stickersRepository.GetByAlbumAndNumberAsync(AlbumId, Number);
+        var stickersList = await _stickersRepository.GetStickersByAlbumAndNumberAsync(AlbumId, Number);
         var sticker = stickersList.FirstOrDefault();
         if (sticker == null)
             return;
         
-        var album = await _albumsRepository.GetByCollectionIdAsync(sticker.AlbumId);
+        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(sticker.AlbumId);
         AlbumTitle = album?.Title ?? string.Empty;
 
         DuplicatesCount =
-            await _stickersRepository.CountAsync(sticker.AlbumId, sticker.Number);
+            await _stickersRepository.CountStickersAsync(sticker.AlbumId, sticker.Number);
 
         OnPropertyChanged(nameof(CanDelete));
 
@@ -75,7 +74,7 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
     [RelayCommand]
     private async Task AddStickerAsync()
     {
-        await _stickersRepository.InsertAsync(new Sticker
+        await _stickersRepository.InsertStickerAsync(new Sticker
         {
             AlbumId = AlbumId,
             Number = Number
@@ -92,7 +91,7 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
         if (!CanDelete)
             return;
 
-        await _stickersRepository.DeleteOneDuplicateAsync(AlbumId, Number);
+        await _stickersRepository.DeleteDuplicateStickerAsync(AlbumId, Number);
 
         DuplicatesCount--;
         OnPropertyChanged(nameof(CanDelete));

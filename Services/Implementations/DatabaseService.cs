@@ -1,15 +1,16 @@
 using Stickr.Models;
 using SQLite;
+using Stickr.Services.Interfaces;
 
 namespace Stickr.Services.Implementations;
 
-public class DatabaseService
+public class DatabaseService : IDatabaseService
 {
     private readonly SQLiteAsyncConnection _db;
 
-    public DatabaseService(string dbPath)
+    public DatabaseService()
     {
-        _db = new SQLiteAsyncConnection(dbPath);
+        _db = new SQLiteAsyncConnection("stickr.db3");
     }
 
     public async Task InitializeAsync()

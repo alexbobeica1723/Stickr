@@ -3,8 +3,8 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Stickr.Messages;
 using Stickr.Models;
-using Stickr.Services.Implementations;
-using Stickr.Services.Repositories;
+using Stickr.Repositories.Interfaces;
+using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Base;
 using Stickr.ViewModels.Elements;
 using Stickr.Views.Pages;
@@ -13,15 +13,15 @@ namespace Stickr.ViewModels;
 
 public partial class MyAlbumsViewModel : BasePageViewModel
 {
-    private readonly AlbumsRepository _albumsRepository;
+    private readonly IAlbumsRepository _albumsRepository;
 
     public ObservableCollection<AlbumItemViewModel> Albums { get; } = new();
     
     public ICommand OpenAlbumCommand { get; }
 
     public MyAlbumsViewModel(
-        AppInitializationService appInitializationService,
-        AlbumsRepository albumsRepository)
+        IAppInitializationService appInitializationService,
+        IAlbumsRepository albumsRepository)
         : base(appInitializationService)
     {
         _albumsRepository = albumsRepository;
@@ -39,7 +39,7 @@ public partial class MyAlbumsViewModel : BasePageViewModel
         IsBusy = true;
 
         Albums.Clear();
-        var albums = await _albumsRepository.GetAllAsync();
+        var albums = await _albumsRepository.GetAlbumsAsync();
 
         foreach (var album in albums)
         {

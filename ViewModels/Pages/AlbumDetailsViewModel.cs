@@ -4,8 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Plugin.Maui.OCR;
 using Stickr.Models;
+using Stickr.Repositories.Interfaces;
 using Stickr.Services.Interfaces;
-using Stickr.Services.Repositories;
 using Stickr.ViewModels.Base;
 using Stickr.ViewModels.Elements;
 using Stickr.Views.Pages;
@@ -26,8 +26,8 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     }
     
     private readonly IDisplayAlertService _displayAlertService;
-    private readonly AlbumsRepository _albumsRepository;
-    private readonly StickersRepository _stickersRepository;
+    private readonly IAlbumsRepository _albumsRepository;
+    private readonly IStickersRepository _stickersRepository;
     
     [RelayCommand]
     private async Task AddTestStickersAsync()
@@ -42,13 +42,13 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             new Sticker { AlbumId = _albumId, Number = 7 }
         };
 
-        await _stickersRepository.InsertManyAsync(newStickers);
+        await _stickersRepository.InsertMultipleStickersAsync(newStickers);
 
         // Update UI immediately
         foreach (var sticker in newStickers)
             Stickers.Add(sticker);
         
-        var album =  await _albumsRepository.GetByCollectionIdAsync(_albumId);
+        var album =  await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
         RebuildPages(album);
     }
     
@@ -121,11 +121,11 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             })
             .ToList();
 
-        await _stickersRepository.InsertManyAsync(newStickers);
+        await _stickersRepository.InsertMultipleStickersAsync(newStickers);
 
         // 🔹 Update UI
         foreach (var sticker in newStickers)Stickers.Add(sticker);
-        var album = await _albumsRepository.GetByCollectionIdAsync(_albumId);
+        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
         RebuildPages(album);
     }
     
@@ -147,8 +147,8 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
     public AlbumDetailsViewModel(
         IDisplayAlertService displayAlertService,
-        AlbumsRepository albumsRepository,
-        StickersRepository stickersRepository)
+        IAlbumsRepository albumsRepository,
+        IStickersRepository stickersRepository)
     {
         _displayAlertService = displayAlertService;
         _albumsRepository = albumsRepository;
@@ -173,7 +173,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
 
         IsBusy = true;
 
-        var album = await _albumsRepository.GetByCollectionIdAsync(_albumId);
+        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
         if (album == null)
             return;
 
@@ -191,7 +191,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     private async Task UpdateStickersAsync()
     {
-        var list = await _stickersRepository.GetByAlbumIdAsync(_albumId);
+        var list = await _stickersRepository.GetStickersByAlbumIdAsync(_albumId);
         Stickers = new ObservableCollection<Sticker>(list);
     }
     

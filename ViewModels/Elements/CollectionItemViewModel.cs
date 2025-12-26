@@ -3,15 +3,15 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Stickr.Messages;
 using Stickr.Models;
-using Stickr.Services.Repositories;
+using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels.Elements;
 
 public partial class CollectionItemViewModel : BaseViewModel
 {
-    private readonly CollectionsRepository _collectionsRepository;
-    private readonly AlbumsRepository _albumsRepository;
+    private readonly ICollectionsRepository _collectionsRepository;
+    private readonly IAlbumsRepository _albumsRepository;
 
     public Collection Model { get; }
 
@@ -25,8 +25,8 @@ public partial class CollectionItemViewModel : BaseViewModel
 
     public CollectionItemViewModel(
         Collection model,
-        CollectionsRepository collectionsRepository,
-        AlbumsRepository albumsRepository)
+        ICollectionsRepository collectionsRepository,
+        IAlbumsRepository albumsRepository)
     {
         Model = model;
         _collectionsRepository =  collectionsRepository;
@@ -57,12 +57,12 @@ public partial class CollectionItemViewModel : BaseViewModel
             Pages = Model.Pages
         };
 
-        await _albumsRepository.InsertAsync(album);
+        await _albumsRepository.InsertAlbumAsync(album);
 
         Model.IsCollecting = true;
         IsCollecting = true;
 
-        await _collectionsRepository.UpdateAsync(Model);
+        await _collectionsRepository.UpdateCollectionAsync(Model);
         
         // 🔔 Notify My Albums
         WeakReferenceMessenger.Default.Send(new AlbumStartedMessage());

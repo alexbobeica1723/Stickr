@@ -1,26 +1,26 @@
+using Plugin.Maui.OCR;
+using Stickr.Services.Interfaces;
+
 namespace Stickr.Services.Implementations;
 
-public class AppInitializationService
+public class AppInitializationService : IAppInitializationService
 {
-    private readonly DatabaseService _databaseService;
-    private readonly SeedService _seedService;
+    private readonly IDatabaseService _databaseService;
 
     private readonly TaskCompletionSource<bool> _readyTcs = new();
 
-    public Task Ready => _readyTcs.Task;
+    public Task CompleteInitializationAsync() => _readyTcs.Task;
 
     public AppInitializationService(
-        DatabaseService databaseService,
-        SeedService seedService)
+        IDatabaseService databaseService)
     {
         _databaseService = databaseService;
-        _seedService = seedService;
     }
 
     public async Task InitializeAsync()
     {
         await _databaseService.InitializeAsync();
-        //await _seedService.SeedAsync();
+        await OcrPlugin.Default.InitAsync();
 
         _readyTcs.TrySetResult(true);
     }

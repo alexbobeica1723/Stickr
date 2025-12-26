@@ -1,12 +1,13 @@
 using Stickr.Services.Implementations;
+using Stickr.Services.Interfaces;
 
 namespace Stickr.ViewModels.Base;
 
 public abstract class BasePageViewModel : BaseViewModel
 {
-    private readonly AppInitializationService _appInitializationService;
+    private readonly IAppInitializationService _appInitializationService;
     
-    protected BasePageViewModel(AppInitializationService appInit)
+    protected BasePageViewModel(IAppInitializationService appInit)
     {
         _appInitializationService = appInit;
     }
@@ -16,7 +17,7 @@ public abstract class BasePageViewModel : BaseViewModel
     /// </summary>
     public async Task InitializeAsync()
     {
-        await _appInitializationService.Ready;
+        await _appInitializationService.CompleteInitializationAsync();
         await InitializeDataAsync();
     }
 

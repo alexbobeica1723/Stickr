@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
-using Stickr.Services.Repositories;
+using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
-using Stickr.Services.Implementations;
+using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Elements;
 using Stickr.Views.Pages;
 
@@ -10,8 +10,8 @@ namespace Stickr.ViewModels;
 
 public partial class CollectionsViewModel : BasePageViewModel
 {
-    private readonly CollectionsRepository _collectionsRepository;
-    private readonly AlbumsRepository _albumsRepository;
+    private readonly ICollectionsRepository _collectionsRepository;
+    private readonly IAlbumsRepository _albumsRepository;
     
     [RelayCommand]
     private async Task CreateCollectionAsync()
@@ -22,9 +22,9 @@ public partial class CollectionsViewModel : BasePageViewModel
     public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
 
     public CollectionsViewModel(
-        AppInitializationService appInitializationService,
-        CollectionsRepository collectionsRepository,
-        AlbumsRepository albumsRepository)
+        IAppInitializationService appInitializationService,
+        ICollectionsRepository collectionsRepository,
+        IAlbumsRepository albumsRepository)
         : base(appInitializationService)
     {
         _collectionsRepository = collectionsRepository;
@@ -37,7 +37,7 @@ public partial class CollectionsViewModel : BasePageViewModel
 
         Collections.Clear();
 
-        var data = await _collectionsRepository.GetAllAsync();
+        var data = await _collectionsRepository.GetCollectionsAsync();
         foreach (var c in data)
         {
             Collections.Add(

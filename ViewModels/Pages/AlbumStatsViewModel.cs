@@ -2,8 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Stickr.Models;
-using Stickr.Services.Implementations;
-using Stickr.Services.Repositories;
+using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 using Page = Stickr.Models.Page;
 
@@ -12,8 +11,8 @@ namespace Stickr.ViewModels.Pages;
 [QueryProperty(nameof(AlbumId), "albumId")]
 public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
-    private readonly StickersRepository _stickersRepository;
-    private readonly AlbumsRepository _albumsRepository;
+    private readonly IStickersRepository _stickersRepository;
+    private readonly IAlbumsRepository _albumsRepository;
 
     [ObservableProperty]
     private string _albumId;
@@ -21,8 +20,8 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
     public ObservableCollection<int> MissingStickers { get; } = new();
     public ObservableCollection<DuplicatedStickerItem> DuplicatedStickers { get; } = new();
 
-    public AlbumStatsViewModel(AlbumsRepository albumsRepository,
-        StickersRepository stickersRepository)
+    public AlbumStatsViewModel(IAlbumsRepository albumsRepository,
+        IStickersRepository stickersRepository)
     {
         _albumsRepository = albumsRepository;
         _stickersRepository = stickersRepository;
@@ -30,7 +29,7 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
 
     public override async Task InitializeDataAsync()
     {
-        var stickers = await _stickersRepository.GetByAlbumIdAsync(AlbumId);
+        var stickers = await _stickersRepository.GetStickersByAlbumIdAsync(AlbumId);
 
         await BuildMissingStickers(stickers);
         BuildDuplicatedStickers(stickers);
@@ -40,7 +39,7 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
     {
         MissingStickers.Clear();
 
-        var album = await _albumsRepository.GetByCollectionIdAsync(AlbumId);
+        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(AlbumId);
         if (album == null) return;
 
         var expected = album.Pages
