@@ -12,11 +12,11 @@ using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels.Pages;
 
+[QueryProperty(nameof(AlbumId), NavigationParameters.AlbumId)]
 public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
     #region Fields
     
-    private string _albumId = string.Empty;
     private string _stickerPattern;
     private bool _hasCameraPermission;
     
@@ -24,6 +24,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     #region Properties
     
+    [ObservableProperty] private string _albumId;
     public ObservableCollection<AlbumPageViewModel> Pages { get; } = [];
     [ObservableProperty] private string _imagePath;
     [ObservableProperty]
@@ -171,22 +172,21 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("albumId", out var value))
+        if (query.TryGetValue(NavigationParameters.AlbumId, out var value))
         {
-            _albumId = value.ToString() ?? string.Empty;
+            AlbumId = value.ToString() ?? string.Empty;
         }
     }
 
     public override async Task InitializeDataAsync()
     {
-        if (string.IsNullOrWhiteSpace(_albumId))
+        if (string.IsNullOrWhiteSpace(AlbumId))
         {
             return; 
         }
 
         IsBusy = true;
         
-        _hasCameraPermission = await CheckCameraPermission();
         var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
 
         if (album is null)

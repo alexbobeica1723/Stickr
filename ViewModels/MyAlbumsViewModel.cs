@@ -11,14 +11,24 @@ using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels;
 
-public partial class MyAlbumsViewModel : BaseTabViewModel
+public class MyAlbumsViewModel : BaseTabViewModel
 {
-    private readonly IAlbumsRepository _albumsRepository;
-    private readonly INavigationService _navigationService;
-
+    #region Properties
+    
     public ObservableCollection<AlbumItemViewModel> Albums { get; } = new();
     
+    #endregion
+
+    #region Commands
+    
     public ICommand OpenAlbumCommand { get; }
+    
+    #endregion
+    
+    #region Constructor & Dependencies
+    
+    private readonly IAlbumsRepository _albumsRepository;
+    private readonly INavigationService _navigationService;
 
     public MyAlbumsViewModel(
         IAppInitializationService appInitializationService,
@@ -31,6 +41,10 @@ public partial class MyAlbumsViewModel : BaseTabViewModel
         WeakReferenceMessenger.Default.Register<AlbumStartedMessage>(this, Receive);
         OpenAlbumCommand = new Command<Album>(OnOpenAlbum);
     }
+    
+    #endregion
+    
+    #region Public Methods
     
     public async void Receive(object recipient, AlbumStartedMessage message)
     {
@@ -52,14 +66,22 @@ public partial class MyAlbumsViewModel : BaseTabViewModel
         IsBusy = false;
     }
     
-    private async void OnOpenAlbum(Album album)
+    #endregion
+
+    #region Private Methods
+
+    private async void OnOpenAlbum(Album? album)
     {
         if (album is null)
+        {
             return;
+        }
 
         await _navigationService.NavigateWithOneParameterAsync(
             NavigationRoutes.AlbumDetailsPage,
             NavigationParameters.AlbumId,
             album.CollectionId);
     }
+
+    #endregion
 }

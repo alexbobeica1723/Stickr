@@ -1,23 +1,50 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Stickr.Constants;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels.Pages;
 
-[QueryProperty(nameof(AlbumId), "albumId")]
+[QueryProperty(nameof(AlbumId), NavigationParameters.AlbumId)]
 public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
-    private readonly IStickersRepository _stickersRepository;
-    private readonly IAlbumsRepository _albumsRepository;
+    #region Properties
 
     [ObservableProperty]
     private string _albumId;
-
     public ObservableCollection<int> MissingStickers { get; } = new();
     public ObservableCollection<DuplicatedStickerItem> DuplicatedStickers { get; } = new();
+    
+    #endregion
+    
+    #region Commands
+    
+    [RelayCommand]
+    private async Task CopyMissingAsync()
+    {
+        var text = string.Join(", ", MissingStickers);
+        
+        await Clipboard.Default.SetTextAsync(text);
+    }
+
+    [RelayCommand]
+    private async Task CopyDuplicatesAsync()
+    {
+        var text = string.Join(", ",
+            DuplicatedStickers.Select(d => $"{d.Number} (x{d.Count})"));
+
+        await Clipboard.Default.SetTextAsync(text);
+    }
+    
+    #endregion
+    
+    #region Constructor & Dependencies
+    
+    private readonly IStickersRepository _stickersRepository;
+    private readonly IAlbumsRepository _albumsRepository;
 
     public AlbumStatsViewModel(IAlbumsRepository albumsRepository,
         IStickersRepository stickersRepository)
@@ -25,6 +52,10 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
         _albumsRepository = albumsRepository;
         _stickersRepository = stickersRepository;
     }
+    
+    #endregion
+    
+    #region Public Methods
 
     public override async Task InitializeDataAsync()
     {
@@ -33,13 +64,24 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
         await BuildMissingStickers(stickers);
         BuildDuplicatedStickers(stickers);
     }
+    
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue(NavigationParameters.AlbumId, out var value))
+        {
+            AlbumId = value.ToString() ?? string.Empty;
+        }
+    }
+    
+    #endregion
+    
+    #region Private Methods
 
     private async Task BuildMissingStickers(IEnumerable<Sticker> stickers)
     {
         MissingStickers.Clear();
 
         var album = await _albumsRepository.GetAlbumByCollectionIdAsync(AlbumId);
-        if (album == null) return;
 
         var expected = album.Pages
             .SelectMany(p => Enumerable.Range(
@@ -69,28 +111,6 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
             DuplicatedStickers.Add(
                 new DuplicatedStickerItem(g.Key, g.Count() - 1));
     }
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (query.TryGetValue("albumId", out var value))
-        {
-            AlbumId = value.ToString() ?? string.Empty;
-        }
-    }
     
-    [RelayCommand]
-    private async Task CopyMissingAsync()
-    {
-        var text = string.Join(", ", MissingStickers);
-        await Clipboard.Default.SetTextAsync(text);
-    }
-
-    [RelayCommand]
-    private async Task CopyDuplicatesAsync()
-    {
-        var text = string.Join(", ",
-            DuplicatedStickers.Select(d => $"{d.Number} (x{d.Count})"));
-
-        await Clipboard.Default.SetTextAsync(text);
-    }
+    #endregion
 }

@@ -5,23 +5,32 @@ using Stickr.Repositories.Interfaces;
 using Stickr.ViewModels.Base;
 using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Elements;
-using Stickr.Views.Pages;
 
 namespace Stickr.ViewModels;
 
 public partial class CollectionsViewModel : BaseTabViewModel
 {
-    private readonly INavigationService _navigationService;
-    private readonly ICollectionsRepository _collectionsRepository;
-    private readonly IAlbumsRepository _albumsRepository;
+    #region Properties
+    
+    public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
+    
+    #endregion
+
+    #region Commands
     
     [RelayCommand]
     private async Task CreateCollectionAsync()
     {
         await _navigationService.NavigateAsync(NavigationRoutes.CreateCollectionPage);
     }
+    
+    #endregion
+    
+    #region Constructor & Dependencies
 
-    public ObservableCollection<CollectionItemViewModel> Collections { get; } = new();
+    private readonly INavigationService _navigationService;
+    private readonly ICollectionsRepository _collectionsRepository;
+    private readonly IAlbumsRepository _albumsRepository;
 
     public CollectionsViewModel(
         IAppInitializationService appInitializationService,
@@ -34,6 +43,10 @@ public partial class CollectionsViewModel : BaseTabViewModel
         _collectionsRepository = collectionsRepository;
         _albumsRepository = albumsRepository;
     }
+    
+    #endregion
+    
+    #region Public Methods
 
     public override async Task InitializeDataAsync()
     {
@@ -50,4 +63,6 @@ public partial class CollectionsViewModel : BaseTabViewModel
 
         IsBusy = false;
     }
+    
+    #endregion
 }

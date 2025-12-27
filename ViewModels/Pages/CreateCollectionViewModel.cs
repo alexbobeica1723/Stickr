@@ -11,22 +11,18 @@ namespace Stickr.ViewModels.Pages;
 
 public partial class CreateCollectionViewModel : BaseModalPageViewModel
 {
-    private readonly INavigationService _navigationService;
-    private readonly ICollectionsRepository _collectionsRepository;
-
-    public CreateCollectionViewModel(
-        INavigationService navigationService,
-        ICollectionsRepository collectionsRepository)
-    {
-        _navigationService = navigationService;
-        _collectionsRepository = collectionsRepository;
-    }
-
+    #region Properties
+    
     [ObservableProperty] private string title = string.Empty;
     [ObservableProperty] private string description = string.Empty;
     [ObservableProperty] private string? stickerRegex;
     [ObservableProperty] private string imagePath = string.Empty;
     [ObservableProperty] private bool startCollecting;
+    public ObservableCollection<Page> Pages { get; } = new();
+    
+    #endregion
+    
+    #region Commands
     
     [RelayCommand]
     private void AddPage()
@@ -42,17 +38,21 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
     {
         Pages.Remove(page);
 
-        // Re-number pages
-        for (int i = 0; i < Pages.Count; i++)
+        for (var i = 0; i < Pages.Count; i++)
+        {
             Pages[i].Number = i + 1;
+        }
     }
     
     [RelayCommand]
     private async Task PickImageAsync()
     {
         var result = await MediaPicker.PickPhotoAsync();
-        if (result == null)
-            return;
+        
+        if (result is null)
+        {
+            return;      
+        }
 
         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(result.FileName)}";
         var destinationPath = Path.Combine(FileSystem.AppDataDirectory, fileName);
@@ -68,7 +68,9 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
     private async Task SaveAsync()
     {
         if (string.IsNullOrWhiteSpace(Title))
+        {
             return;
+        }
 
         var collection = new Collection
         {
@@ -83,16 +85,34 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
         };
 
         await _collectionsRepository.InsertCollectionAsync(collection);
-
         await _navigationService.GoBackAsync();
     }
+    
+    #endregion
+    
+    #region Constructor & Dependencies
+    
+    private readonly INavigationService _navigationService;
+    private readonly ICollectionsRepository _collectionsRepository;
 
-    public ObservableCollection<Page> Pages { get; } = new();
+    public CreateCollectionViewModel(
+        INavigationService navigationService,
+        ICollectionsRepository collectionsRepository)
+    {
+        _navigationService = navigationService;
+        _collectionsRepository = collectionsRepository;
+    }
+    
+    #endregion
 
+    #region Public Methods
+    
     public override Task InitializeDataAsync()
     {
         // Start with one empty page by default
         Pages.Add(new Page { Number = 1 });
         return Task.CompletedTask;
     }
+    
+    #endregion
 }
