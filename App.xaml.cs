@@ -1,5 +1,4 @@
-﻿using Plugin.Maui.OCR;
-using Stickr.Services.Interfaces;
+﻿using Stickr.Services.Interfaces;
 using Stickr.Views.Pages;
 
 namespace Stickr;
@@ -20,5 +19,16 @@ public partial class App : Application
         await initService.InitializeAsync();
 
         MainPage = new AppShell();
+        
+        var completed = Preferences.Get("OnboardingCompleted", false);
+
+        if (!completed)
+        {
+            await MainPage.Dispatcher.DispatchAsync(async () =>
+            {
+                await Shell.Current.Navigation.PushModalAsync(
+                    new OnboardingView());
+            });
+        }
     }
 }

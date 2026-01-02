@@ -46,6 +46,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CreateCollectionViewModel>();
         builder.Services.AddTransient<StickerDetailsViewModel>();
         builder.Services.AddTransient<AlbumStatsViewModel>();
+        builder.Services.AddSingleton<OnboardingViewModel>();
 
         // Views
         builder.Services.AddSingleton<CollectionsView>();
@@ -55,6 +56,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CreateCollectionView>();
         builder.Services.AddTransient<StickerDetailsView>();
         builder.Services.AddTransient<AlbumStatsView>();
+        builder.Services.AddSingleton<OnboardingView>();
 
 #if DEBUG
         builder.Logging.AddDebug();

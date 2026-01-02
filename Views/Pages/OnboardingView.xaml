@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage
+    x:Class="Stickr.Views.Pages.OnboardingView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Stickr.ViewModels.Pages"
+    xmlns:models="clr-namespace:Stickr.Models"
+    x:DataType="pages:OnboardingViewModel">
+
+    <Grid RowDefinitions="*,Auto" Padding="24">
+
+        <!-- Carousel -->
+        <CarouselView
+            x:Name="Car"
+            ItemsSource="{Binding Slides}"
+            Position="{Binding Position}"
+            IsSwipeEnabled="False">
+
+            <CarouselView.ItemTemplate>
+                <DataTemplate x:DataType="models:OnboardingSlide">
+                    <VerticalStackLayout Spacing="20" VerticalOptions="Center">
+
+                        <Image Source="{Binding Image}" HeightRequest="200"/>
+
+                        <Label
+                            Text="{Binding Title}"
+                            FontSize="24"
+                            HorizontalTextAlignment="Center"/>
+
+                        <Label
+                            Text="{Binding Description}"
+                            FontSize="16"
+                            HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <!-- Navigation Buttons -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" Padding="0,16">
+
+            <Button
+                Text="Back"
+                IsVisible="{Binding IsBackButtonVisible}"
+                Command="{Binding PreviousCommand}"/>
+
+            <Button
+                Text="Next"
+                Grid.Column="1"
+                Command="{Binding NextCommand}"/>
+
+            <Button
+                Text="Finish"
+                IsVisible="{Binding IsFinishButtonVisible}"
+                Grid.Column="1"
+                Command="{Binding FinishCommand}"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>
