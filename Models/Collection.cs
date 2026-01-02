@@ -25,7 +25,8 @@ public class Collection
     /// </summary>
     public string StickerRegexPattern { get; set; } = string.Empty;
 
-    private string PagesJson { get; set; } = string.Empty;
+    // Setting this to private will mess up with SQLite
+    public string PagesJson { get; set; } = string.Empty;
 
     [Ignore]
     public List<Page> Pages

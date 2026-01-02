@@ -26,7 +26,8 @@ public class Album
     /// </summary>
     public string StickerRegexPattern { get; set; } = string.Empty;
 
-    private string PagesJson { get; set; } = "[]";
+    // Setting this to private will mess up with SQLite
+    public string PagesJson { get; set; } = string.Empty;
     
     [Ignore]
     public IReadOnlyList<Page> Pages
