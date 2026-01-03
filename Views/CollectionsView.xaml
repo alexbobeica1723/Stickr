@@ -7,7 +7,9 @@
     xmlns:viewModels="clr-namespace:Stickr.ViewModels"
     xmlns:elementsViewModels="clr-namespace:Stickr.ViewModels.Elements"
     x:DataType="viewModels:CollectionsViewModel"
-    Title="Collections">
+    BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColorLight},
+                                   Dark={StaticResource BackgroundColorDark}}"
+    Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="Auto,*">
 

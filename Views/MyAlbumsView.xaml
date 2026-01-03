@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:Stickr.ViewModels"
              xmlns:elements="clr-namespace:Stickr.ViewModels.Elements"
+             Shell.NavBarIsVisible="False"
              x:DataType="viewModels:MyAlbumsViewModel"
              x:Class="Stickr.Views.MyAlbumsView">
     <CollectionView ItemsSource="{Binding Albums}">

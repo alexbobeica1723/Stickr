@@ -18,7 +18,11 @@ public class DatabaseService : IDatabaseService
 
     public DatabaseService()
     {
-        _databaseConnection = new SQLiteAsyncConnection(DatabaseName);
+        var dbPath = Path.Combine(
+            FileSystem.AppDataDirectory,
+            DatabaseName);
+
+        _databaseConnection = new SQLiteAsyncConnection(dbPath);
     }
     
     #endregion

@@ -2,11 +2,48 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Stickr.ViewModels"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColorLight},
+                                   Dark={StaticResource BackgroundColorDark}}"
+             x:DataType="viewModels:ProfileViewModel"
              x:Class="Stickr.Views.ProfileView">
     <VerticalStackLayout Padding="16">
         <Label 
             Text="Profile" 
             FontSize="24" />
         <Label Text="Settings and preferences." />
+        
+        <Button
+            Text="Toggle Theme"
+            Command="{Binding ToggleThemeCommand}"
+            HorizontalOptions="Fill"
+            HeightRequest="48"
+            CornerRadius="14"
+            Margin="0,12"/>
+        
+        <VerticalStackLayout>
+            <Grid HeightRequest="100"
+                  WidthRequest="300"
+                  Margin="8"
+                  RowDefinitions="30, *"
+                  BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryColorLight},
+                                   Dark={StaticResource SecondaryColorDark}}">
+                <Label Text="Title"
+                       FontSize="24"
+                       Margin="4"
+                       Grid.Row="0"/>
+                <Label Text="A really nice test description with the purpose of checking the colors."
+                       FontSize="18"
+                       Margin="4"
+                       Grid.Row="1"/>
+            </Grid>
+            <Button WidthRequest="120"
+                    Height="30"
+                    CornerRadius="16"
+                    Text="Test your color"
+                    TextColor="{StaticResource BackgroundColorDark}"
+                    BackgroundColor="{StaticResource PrimaryColor}"/>
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

@@ -22,6 +22,7 @@ public static class MauiProgram
             .UseOcr()
             .ConfigureFonts(fonts =>
             {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 

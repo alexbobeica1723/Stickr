@@ -19,6 +19,13 @@ public partial class App : Application
         await initService.InitializeAsync();
 
         MainPage = new AppShell();
+
+        var savedTheme = Preferences.Get("AppTheme", string.Empty);
+
+        if (Enum.TryParse<AppTheme>(savedTheme, out var theme))
+        {
+            Application.Current.UserAppTheme = theme;
+        }
         
         var completed = Preferences.Get("OnboardingCompleted", false);
 
