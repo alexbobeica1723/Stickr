@@ -4,6 +4,7 @@
     x:Class="Stickr.Views.CollectionsView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:icons="clr-namespace:Stickr.Constants"
     xmlns:viewModels="clr-namespace:Stickr.ViewModels"
     xmlns:elementsViewModels="clr-namespace:Stickr.ViewModels.Elements"
     x:DataType="viewModels:CollectionsViewModel"
@@ -42,6 +43,14 @@
                Text="See details"
                Margin="0, 8"/>
         
+        <Label Grid.Row="3"
+               Style="{StaticResource ClickableLabelStyle}"
+               Text="{x:Static icons:Icons.Profile}"
+               FontFamily="MaterialIcons"
+               HorizontalOptions="End"
+               HorizontalTextAlignment="End"
+               Margin="0, 8"/>
+        
         <CollectionView
             Margin="0, 8"
             Grid.Row="4"
@@ -64,25 +73,17 @@
                                    Source="{Binding Model.Image}"/>
                             
                             <Grid Grid.Row="1"
-                                  RowDefinitions="24, auto, 16">
+                                  RowDefinitions="Auto, Auto">
                                 
                                 <Label
                                     Grid.Row="0"
-                                    Text="{Binding Model.Title}"
-                                    FontSize="18"
-                                    FontAttributes="Bold" />
+                                    Style="{StaticResource TextStyle}"
+                                    Text="{Binding Model.Title}" />
 
                                 <Label
                                     Grid.Row="1"
-                                    Text="{Binding Model.Description}"
-                                    FontSize="14"
-                                    TextColor="Gray" />
-
-                                <Label
-                                    Grid.Row="2"
-                                    Text="{Binding StatusText}"
-                                    FontSize="13"
-                                    TextColor="DarkGray" />
+                                    Style="{StaticResource DescriptionStyle}"
+                                    Text="{Binding Model.Description}"/>
                                 
                                 <Button Grid.Row="2"
                                         HeightRequest="20"

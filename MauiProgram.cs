@@ -28,6 +28,7 @@ public static class MauiProgram
                 fonts.AddFont("Poppins-Medium.ttf", "PoppinsMedium");
                 fonts.AddFont("Poppins-Regular.ttf", "PoppinsRegular");
                 fonts.AddFont("Poppins-SemiBold.ttf", "PoppinsSemiBold");
+                fonts.AddFont("MaterialSymbolsOutlined.ttf", "MaterialIcons");
             });
 
         // Services
