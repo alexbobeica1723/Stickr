@@ -4,8 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:Stickr.ViewModels"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColorLight},
-                                   Dark={StaticResource BackgroundColorDark}}"
+             BackgroundColor="{StaticResource BackgroundColor}"
              x:DataType="viewModels:ProfileViewModel"
              x:Class="Stickr.Views.ProfileView">
     <VerticalStackLayout Padding="16">
@@ -26,9 +25,7 @@
             <Grid HeightRequest="100"
                   WidthRequest="300"
                   Margin="8"
-                  RowDefinitions="30, *"
-                  BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryColorLight},
-                                   Dark={StaticResource SecondaryColorDark}}">
+                  RowDefinitions="30, *">
                 <Label Text="Title"
                        FontSize="24"
                        Margin="4"
@@ -42,7 +39,7 @@
                     Height="30"
                     CornerRadius="16"
                     Text="Test your color"
-                    TextColor="{StaticResource BackgroundColorDark}"
+                    TextColor="{StaticResource BackgroundColor}"
                     BackgroundColor="{StaticResource PrimaryColor}"/>
         </VerticalStackLayout>
     </VerticalStackLayout>

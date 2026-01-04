@@ -7,11 +7,11 @@
     xmlns:viewModels="clr-namespace:Stickr.ViewModels"
     xmlns:elementsViewModels="clr-namespace:Stickr.ViewModels.Elements"
     x:DataType="viewModels:CollectionsViewModel"
-    BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColorLight},
-                                   Dark={StaticResource BackgroundColorDark}}"
-    Shell.NavBarIsVisible="False">
+    BackgroundColor="{StaticResource BackgroundColor}"
+    Shell.NavBarIsVisible="False"
+    Padding="24, 16">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto">
 
         <!-- Loading indicator -->
         <ActivityIndicator
@@ -21,13 +21,30 @@
             HorizontalOptions="Center"
             Margin="12" />
         
+        <!-- Available Collections -->
+        <Label Grid.Row="0"
+               Style="{StaticResource TitleStyle}"
+               Text="Available Collections"
+               Margin="0, 8"/>
         
-        <Button Text="➕ Create collection"
-                Command="{Binding CreateCollectionCommand}" />
-
-        <!-- Collections list -->
+        <Label Grid.Row="1"
+               Style="{StaticResource TextStyle}"
+               Text="This is a regular type text. Debug purposes."
+               Margin="0, 8"/>
+        
+        <Label Grid.Row="2"
+               Style="{StaticResource DescriptionStyle}"
+               Text="This is an example of description text. It will be used as a secondary text when needed"
+               Margin="0, 8"/>
+        
+        <Label Grid.Row="3"
+               Style="{StaticResource ClickableLabelStyle}"
+               Text="See details"
+               Margin="0, 8"/>
+        
         <CollectionView
-            Grid.Row="1"
+            Margin="0, 8"
+            Grid.Row="4"
             ItemsSource="{Binding Collections}"
             SelectionMode="None">
 
@@ -35,39 +52,67 @@
                 <DataTemplate
                     x:DataType="elementsViewModels:CollectionItemViewModel">
 
-                    <Frame
-                        Margin="12"
-                        Padding="12"
-                        CornerRadius="12"
-                        HasShadow="True">
+                    <Border
+                        Margin="0, 8"
+                        BackgroundColor="{StaticResource SecondaryColor}"
+                        HeightRequest="280">
+                        
+                        <Grid RowDefinitions="2*, *">
+                            
+                            <Image Grid.Row="0"
+                                   Aspect="AspectFill"
+                                   Source="{Binding Model.Image}"/>
+                            
+                            <Grid Grid.Row="1"
+                                  RowDefinitions="24, auto, 16">
+                                
+                                <Label
+                                    Grid.Row="0"
+                                    Text="{Binding Model.Title}"
+                                    FontSize="18"
+                                    FontAttributes="Bold" />
 
-                        <VerticalStackLayout Spacing="8">
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding Model.Description}"
+                                    FontSize="14"
+                                    TextColor="Gray" />
 
-                            <Label
-                                Text="{Binding Model.Title}"
-                                FontSize="18"
-                                FontAttributes="Bold" />
-
-                            <Label
-                                Text="{Binding Model.Description}"
-                                FontSize="14"
-                                TextColor="Gray" />
-
-                            <Label
-                                Text="{Binding StatusText}"
-                                FontSize="13"
-                                TextColor="DarkGray" />
-
-                            <Button
-                                Text="Start collecting"
-                                Command="{Binding StartCollectingCommand}" />
-
-                        </VerticalStackLayout>
-                    </Frame>
+                                <Label
+                                    Grid.Row="2"
+                                    Text="{Binding StatusText}"
+                                    FontSize="13"
+                                    TextColor="DarkGray" />
+                                
+                                <Button Grid.Row="2"
+                                        HeightRequest="20"
+                                        CornerRadius="5"
+                                        BackgroundColor="{StaticResource PrimaryColor}"
+                                        HorizontalOptions="End"
+                                        Text="Start collecting"
+                                        FontSize="13"
+                                        TextColor="{StaticResource BackgroundColor}"
+                                        Command="{Binding StartCollectingCommand}"/>
+                                
+                            </Grid>
+                            
+                        </Grid>
+                        
+                    </Border>
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
         </CollectionView>
+        
+        <Button Grid.Row="5"
+                HeightRequest="24"
+                CornerRadius="24"
+                Margin="0, 8"
+                BackgroundColor="{StaticResource PrimaryColor}"
+                Text="Create your own collection"
+                FontSize="13"
+                TextColor="{StaticResource BackgroundColor}"
+                Command="{Binding CreateCollectionCommand}"/>
     </Grid>
 </ContentPage>
