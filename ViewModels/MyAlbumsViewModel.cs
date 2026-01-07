@@ -28,15 +28,18 @@ public class MyAlbumsViewModel : BaseTabViewModel
     #region Constructor & Dependencies
     
     private readonly IAlbumsRepository _albumsRepository;
+    private readonly IStickersRepository _stickersRepository;
     private readonly INavigationService _navigationService;
 
     public MyAlbumsViewModel(
         IAppInitializationService appInitializationService,
         INavigationService navigationService,
-        IAlbumsRepository albumsRepository)
+        IAlbumsRepository albumsRepository,
+        IStickersRepository stickersRepository)
         : base(appInitializationService)
     {
         _albumsRepository = albumsRepository;
+        _stickersRepository = stickersRepository;
         _navigationService = navigationService;
         WeakReferenceMessenger.Default.Register<AlbumStartedMessage>(this, Receive);
         OpenAlbumCommand = new Command<Album>(OnOpenAlbum);
@@ -60,7 +63,7 @@ public class MyAlbumsViewModel : BaseTabViewModel
 
         foreach (var album in albums)
         {
-            Albums.Add(new AlbumItemViewModel(_navigationService, album));
+            Albums.Add(new AlbumItemViewModel(_navigationService, album, _stickersRepository));
         }
 
         IsBusy = false;

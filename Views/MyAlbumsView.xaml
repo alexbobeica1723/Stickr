@@ -6,35 +6,81 @@
              xmlns:elements="clr-namespace:Stickr.ViewModels.Elements"
              Shell.NavBarIsVisible="False"
              x:DataType="viewModels:MyAlbumsViewModel"
-             x:Class="Stickr.Views.MyAlbumsView">
-    <CollectionView ItemsSource="{Binding Albums}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="elements:AlbumItemViewModel">
-                <Frame
-                    Padding="16"
-                    Margin="8"
-                    CornerRadius="12"
-                    HasShadow="True">
+             x:Class="Stickr.Views.MyAlbumsView"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             Padding="24, 16">
+    <Grid RowDefinitions="*">
+        <CollectionView Grid.Row="0" 
+                        ItemsSource="{Binding Albums}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="elements:AlbumItemViewModel">
+                    <!--<Frame
+                        Padding="16"
+                        Margin="8"
+                        CornerRadius="12"
+                        HasShadow="True">
 
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding OpenAlbumDetailsCommand}" />
-                    </Frame.GestureRecognizers>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding OpenAlbumDetailsCommand}" />
+                        </Frame.GestureRecognizers>
 
-                    <VerticalStackLayout Spacing="6">
-                        <Label
-                            Text="{Binding Title}"
-                            FontSize="16"
-                            FontAttributes="Bold" />
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                Text="{Binding Title}"
+                                FontSize="16"
+                                FontAttributes="Bold" />
 
-                        <Label
-                            Text="{Binding TotalStickers, StringFormat='Total stickers: {0}'}"
-                            FontSize="12"
-                            TextColor="Gray" />
-                    </VerticalStackLayout>
+                            <Label
+                                Text="{Binding TotalStickers, StringFormat='Total stickers: {0}'}"
+                                FontSize="12"
+                                TextColor="Gray" />
+                        </VerticalStackLayout>
 
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                    </Frame>-->
+                    <Border
+                        Margin="0, 8"
+                        BackgroundColor="{StaticResource SecondaryColor}"
+                        HeightRequest="280">
+                        
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding OpenAlbumDetailsCommand}" />
+                        </Border.GestureRecognizers>
+                        
+                        <Grid RowDefinitions="2*, *">
+                            
+                            <!--<Image Grid.Row="0"
+                                   Aspect="AspectFill"
+                                   Source="{Binding Image}"/>-->
+                            
+                            <Grid Grid.Row="1"
+                                  RowDefinitions="Auto, Auto, Auto">
+                                
+                                <Label
+                                    Grid.Row="0"
+                                    Style="{StaticResource TextStyle}"
+                                    Text="{Binding Title}" />
+
+                                <Label
+                                    Grid.Row="1"
+                                    Style="{StaticResource DescriptionStyle}"
+                                    Text="{Binding TotalStickers}"/>
+                                
+                                <ProgressBar Grid.Row="2"
+                                             HeightRequest="8"
+                                             Progress="{Binding Progress}"
+                                             BackgroundColor="{StaticResource BackgroundColor}"
+                                             ProgressColor="{StaticResource PrimaryColor}"
+                                             Margin="4"/>
+                                
+                            </Grid>
+                            
+                        </Grid>
+                        
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>

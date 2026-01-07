@@ -9,5 +9,6 @@ public interface IStickersRepository
     Task InsertMultipleStickersAsync(IEnumerable<Sticker> stickers);
     Task<int> CountStickersAsync(string albumId, int number);
     Task<List<Sticker>> GetStickersByAlbumAndNumberAsync(string albumId, int number);
+    Task<int> GetUniqueStickerCountAsync(string albumId);
     Task<bool> DeleteDuplicatedStickerAsync(string albumId, int number);
 }

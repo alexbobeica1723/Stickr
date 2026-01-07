@@ -42,6 +42,15 @@ public class StickersRepository : IStickersRepository
             .OrderBy(s => s.AddedAt)
             .ToListAsync();
     
+    public async Task<int> GetUniqueStickerCountAsync(string albumId)
+    {
+        var numbers = await _databaseConnection.Table<Sticker>()
+            .Where(s => s.AlbumId == albumId)
+            .ToListAsync();
+
+        return numbers.Distinct().Count();
+    }
+    
     public async Task<bool> DeleteDuplicatedStickerAsync(string albumId, int number)
     {
         var stickers = await GetStickersByAlbumAndNumberAsync(albumId, number);
