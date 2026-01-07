@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Stickr.Messages;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
+using Stickr.Services.Interfaces;
 using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels.Elements;
@@ -14,10 +15,13 @@ public partial class CollectionItemViewModel : BaseViewModel
     
     public Collection Model { get; }
     [ObservableProperty]
-    private bool isCollecting;
+    private bool _isCollecting;
+    [ObservableProperty]
+    private bool _isStartCollectionIconVisible;
 
     public string StatusText =>
-        IsCollecting ? "Status: collecting" : "Status: not started";
+        IsCollecting ? "Status: Collecting" : "Status: Available";
+    public string TotalStickers => "Stickers to collect: " + Model.TotalStickers;
     
     #endregion
 
@@ -31,17 +35,21 @@ public partial class CollectionItemViewModel : BaseViewModel
     
     private readonly ICollectionsRepository _collectionsRepository;
     private readonly IAlbumsRepository _albumsRepository;
+    private readonly IDisplayAlertService _displayAlertService;
     
     public CollectionItemViewModel(
         Collection model,
         ICollectionsRepository collectionsRepository,
-        IAlbumsRepository albumsRepository)
+        IAlbumsRepository albumsRepository,
+        IDisplayAlertService displayAlertService)
     {
         Model = model;
         _collectionsRepository =  collectionsRepository;
         _albumsRepository = albumsRepository;
+        _displayAlertService = displayAlertService;
 
-        isCollecting = model.IsCollecting;
+        IsCollecting = model.IsCollecting;
+        IsStartCollectionIconVisible = !IsCollecting;
         StartCollectingCommand = new AsyncRelayCommand(StartCollectingAsync);
     }
     
@@ -56,9 +64,19 @@ public partial class CollectionItemViewModel : BaseViewModel
 
     private async Task StartCollectingAsync()
     {
-        if (IsCollecting)
-            return;
+        var confirm = await _displayAlertService.DisplayAlert(
+            "Start collection?",
+            $"Do you wish to start collecting " + Model.Title + "?",
+            "Yes",
+            "Cancel");
 
+        if (!confirm)
+        {
+            return;
+        }
+
+        IsStartCollectionIconVisible = false;
+        
         var album = new Album
         {
             CollectionId = Model.Id,

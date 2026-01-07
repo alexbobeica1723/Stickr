@@ -6,7 +6,8 @@
     xmlns:views="clr-namespace:Stickr.Views"
     FlyoutBehavior="Disabled"
     TabBarTitleColor="{StaticResource PrimaryColor}"
-    BackgroundColor="{StaticResource BackgroundColor}">
+    BackgroundColor="{StaticResource BackgroundColor}"
+    TabBarBackgroundColor="{StaticResource BackgroundColor}">
 
     <TabBar>
         <ShellContent

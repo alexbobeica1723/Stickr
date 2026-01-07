@@ -12,7 +12,7 @@
     Shell.NavBarIsVisible="False"
     Padding="24, 16">
 
-    <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto, Auto">
+    <Grid RowDefinitions="Auto, *">
 
         <!-- Loading indicator -->
         <ActivityIndicator
@@ -42,8 +42,9 @@
         
         <CollectionView
             Margin="0, 8"
-            Grid.Row="4"
+            Grid.Row="1"
             ItemsSource="{Binding Collections}"
+            VerticalScrollBarVisibility="Never"
             SelectionMode="None">
 
             <CollectionView.ItemTemplate>
@@ -53,36 +54,58 @@
                     <Border
                         Margin="0, 8"
                         BackgroundColor="{StaticResource SecondaryColor}"
-                        HeightRequest="280">
+                        HeightRequest="360"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 10,10,10,10">
                         
-                        <Grid RowDefinitions="2*, *">
+                        <Grid RowDefinitions="*, *">
                             
                             <Image Grid.Row="0"
                                    Aspect="AspectFill"
-                                   Source="{Binding Model.Image}"/>
+                                   Source="{Binding Model.Image}"
+                                   Margin="-1"/>
                             
                             <Grid Grid.Row="1"
-                                  RowDefinitions="Auto, Auto">
+                                  RowDefinitions="Auto, Auto, Auto, *">
                                 
                                 <Label
                                     Grid.Row="0"
-                                    Style="{StaticResource TextStyle}"
-                                    Text="{Binding Model.Title}" />
+                                    Style="{StaticResource HeadlineTextStyle}"
+                                    Text="{Binding Model.Title}"
+                                    Margin="8, 8, 8, 4"/>
 
                                 <Label
                                     Grid.Row="1"
-                                    Style="{StaticResource DescriptionStyle}"
-                                    Text="{Binding Model.Description}"/>
+                                    Style="{StaticResource PrimaryTextStyle}"
+                                    Text="{Binding Model.Description}"
+                                    Margin="8, 4"/>
                                 
-                                <Button Grid.Row="2"
-                                        HeightRequest="20"
-                                        CornerRadius="5"
-                                        BackgroundColor="{StaticResource PrimaryColor}"
-                                        HorizontalOptions="End"
-                                        Text="Start collecting"
-                                        FontSize="13"
-                                        TextColor="{StaticResource BackgroundColor}"
-                                        Command="{Binding StartCollectingCommand}"/>
+                                <Label
+                                    Grid.Row="2"
+                                    Style="{StaticResource SecondaryTextStyle}"
+                                    Text="{Binding TotalStickers}"
+                                    Margin="8, 4"/>
+                                
+                                <Label
+                                    Grid.Row="3"
+                                    Style="{StaticResource SecondaryTextStyle}"
+                                    Text="{Binding StatusText}"
+                                    Margin="8, 4, 8, 8"
+                                    VerticalOptions="End"/>
+                                
+                                <Label
+                                    Grid.Row="3"
+                                    Style="{StaticResource ClickableIconStyle}"
+                                    Text="{x:Static icons:Icons.StartCollection}"
+                                    Margin="8, 4, 8, 8"
+                                    VerticalOptions="End"
+                                    HorizontalOptions="End"
+                                    IsVisible="{Binding IsStartCollectionIconVisible}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding StartCollectingCommand}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
                                 
                             </Grid>
                             
@@ -95,14 +118,22 @@
 
         </CollectionView>
         
-        <Button Grid.Row="5"
-                Style="{StaticResource SecondaryButton}"
-                Text="Secondary button"
-                Command="{Binding CreateCollectionCommand}"/>
-        
-        <Button Grid.Row="6"
-                Style="{StaticResource PrimaryButton}"
-                Text="Primary button"
-                Command="{Binding CreateCollectionCommand}"/>
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding IsEmpty}"
+                             Margin="0, 4"
+                             VerticalOptions="Center">
+            <Label 
+                Style="{StaticResource MainIconStyle}"
+                Text="{x:Static icons:Icons.NoItemsAvailable}"
+                Margin="0, 4"/>
+            <Label 
+                Style="{StaticResource HeadlineTextStyle}"
+                Text="There are no available collections right now."
+                Margin="0, 4"/>
+            <Label 
+                Style="{StaticResource PrimaryTextStyle}"
+                Text="You can always create your own collection by tapping the button in the top right corner of the screen."
+                Margin="0, 4"/>
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

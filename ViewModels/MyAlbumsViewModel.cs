@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Stickr.Constants;
 using Stickr.Messages;
@@ -11,11 +12,13 @@ using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels;
 
-public class MyAlbumsViewModel : BaseTabViewModel
+public partial class MyAlbumsViewModel : BaseTabViewModel
 {
     #region Properties
     
     public ObservableCollection<AlbumItemViewModel> Albums { get; } = new();
+    [ObservableProperty]
+    private bool _isEmpty;
     
     #endregion
 
@@ -65,6 +68,8 @@ public class MyAlbumsViewModel : BaseTabViewModel
         {
             Albums.Add(new AlbumItemViewModel(_navigationService, album, _stickersRepository));
         }
+        
+        IsEmpty = albums.Count == 0;
 
         IsBusy = false;
     }
