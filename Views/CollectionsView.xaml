@@ -97,13 +97,11 @@
         
         <Button Grid.Row="5"
                 Style="{StaticResource SecondaryButton}"
-                Margin="0, 8"
                 Text="Secondary button"
                 Command="{Binding CreateCollectionCommand}"/>
         
         <Button Grid.Row="6"
                 Style="{StaticResource PrimaryButton}"
-                Margin="0, 8"
                 Text="Primary button"
                 Command="{Binding CreateCollectionCommand}"/>
     </Grid>

@@ -58,6 +58,7 @@
         <Setter Property="Padding" Value="16,8"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="180"/>
+        <Setter Property="Margin" Value="0, 8"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -84,6 +85,7 @@
         <Setter Property="Padding" Value="16,8"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="180"/>
+        <Setter Property="Margin" Value="0, 8"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
