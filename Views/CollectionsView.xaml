@@ -12,7 +12,7 @@
     Shell.NavBarIsVisible="False"
     Padding="24, 16">
 
-    <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto">
+    <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto, Auto">
 
         <!-- Loading indicator -->
         <ActivityIndicator
@@ -25,31 +25,20 @@
         <!-- Available Collections -->
         <Label Grid.Row="0"
                Style="{StaticResource TitleStyle}"
-               Text="Available Collectionss"
+               Text="Available Collections"
                Margin="0, 8"/>
         
-        <Label Grid.Row="1"
-               Style="{StaticResource TextStyle}"
-               Text="This is a regular type text. Debug purposes."
-               Margin="0, 8"/>
-        
-        <Label Grid.Row="2"
-               Style="{StaticResource DescriptionStyle}"
-               Text="This is an example of description text. It will be used as a secondary text when needed"
-               Margin="0, 8"/>
-        
-        <Label Grid.Row="3"
-               Style="{StaticResource ClickableLabelStyle}"
-               Text="See details"
-               Margin="0, 8"/>
-        
-        <Label Grid.Row="3"
-               Style="{StaticResource ClickableLabelStyle}"
-               Text="{x:Static icons:Icons.Profile}"
-               FontFamily="MaterialIcons"
+        <Label Grid.Row="0"
+               Style="{StaticResource ClickableIconStyle}"
+               Text="{x:Static icons:Icons.Add}"
                HorizontalOptions="End"
-               HorizontalTextAlignment="End"
-               Margin="0, 8"/>
+               VerticalOptions="Center"
+               Margin="0, 8">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer
+                    Command="{Binding CreateCollectionCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
         
         <CollectionView
             Margin="0, 8"
@@ -107,13 +96,15 @@
         </CollectionView>
         
         <Button Grid.Row="5"
-                HeightRequest="24"
-                CornerRadius="24"
+                Style="{StaticResource SecondaryButton}"
                 Margin="0, 8"
-                BackgroundColor="{StaticResource PrimaryColor}"
-                Text="Create your own collection"
-                FontSize="13"
-                TextColor="{StaticResource BackgroundColor}"
+                Text="Secondary button"
+                Command="{Binding CreateCollectionCommand}"/>
+        
+        <Button Grid.Row="6"
+                Style="{StaticResource PrimaryButton}"
+                Margin="0, 8"
+                Text="Primary button"
                 Command="{Binding CreateCollectionCommand}"/>
     </Grid>
 </ContentPage>

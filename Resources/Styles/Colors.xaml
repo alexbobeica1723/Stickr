@@ -35,6 +35,7 @@
     <Color x:Key="PrimaryColor">#D5FF5F</Color>
     <Color x:Key="SecondaryColor">#1D1D1D</Color>
     <Color x:Key="BackgroundColor">#101010</Color>
+    <Color x:Key="BorderColor">#313131</Color>
     <Color x:Key="PrimaryTextColor">#F7FBFF</Color>
     <Color x:Key="SecondaryTextColor">Grey</Color>
 
