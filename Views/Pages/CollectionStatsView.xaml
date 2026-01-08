@@ -4,8 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pages="clr-namespace:Stickr.ViewModels.Pages"
              xmlns:models="clr-namespace:Stickr.Models"
-             x:Class="Stickr.Views.Pages.AlbumStatsView"
-             x:DataType="pages:AlbumStatsViewModel">
+             x:Class="Stickr.Views.Pages.CollectionStatsView"
+             x:DataType="pages:CollectionStatsViewModel">
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="24">
 

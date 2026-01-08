@@ -14,7 +14,7 @@
             HorizontalOptions="Center" />
 
         <Label
-            Text="{Binding AlbumTitle}"
+            Text="{Binding CollectionTitle}"
             FontSize="16"
             HorizontalOptions="Center"
             TextColor="Gray" />

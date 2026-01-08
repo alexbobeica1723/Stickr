@@ -20,9 +20,9 @@ public class StickersRepository : IStickersRepository
     
     #region Public Methods
 
-    public Task<List<Sticker>> GetStickersByAlbumIdAsync(string albumId)
+    public Task<List<Sticker>> GetStickersByCollectionIdAsync(string collectionId)
         => _databaseConnection.Table<Sticker>()
-            .Where(s => s.AlbumId == albumId)
+            .Where(s => s.CollectionId == collectionId)
             .OrderBy(s => s.Number)
             .ToListAsync();
 
@@ -31,29 +31,29 @@ public class StickersRepository : IStickersRepository
     public Task InsertMultipleStickersAsync(IEnumerable<Sticker> stickers) 
         => _databaseConnection.InsertAllAsync(stickers);
 
-    public Task<int> CountStickersAsync(string albumId, int number)
+    public Task<int> CountCollectionStickersAsync(string collectionId, int number)
         => _databaseConnection.Table<Sticker>()
-            .Where(s => s.AlbumId == albumId && s.Number == number)
+            .Where(s => s.CollectionId == collectionId && s.Number == number)
             .CountAsync();
     
-    public Task<List<Sticker>> GetStickersByAlbumAndNumberAsync(string albumId, int number)
+    public Task<List<Sticker>> GetStickersByCollectionAndNumberAsync(string collectionId, int number)
         => _databaseConnection.Table<Sticker>()
-            .Where(s => s.AlbumId == albumId && s.Number == number)
+            .Where(s => s.CollectionId == collectionId && s.Number == number)
             .OrderBy(s => s.AddedAt)
             .ToListAsync();
     
-    public async Task<int> GetUniqueStickerCountAsync(string albumId)
+    public async Task<int> GetUniqueStickerCountAsync(string collectionId)
     {
         var numbers = await _databaseConnection.Table<Sticker>()
-            .Where(s => s.AlbumId == albumId)
+            .Where(s => s.CollectionId == collectionId)
             .ToListAsync();
 
         return numbers.Distinct().Count();
     }
     
-    public async Task<bool> DeleteDuplicatedStickerAsync(string albumId, int number)
+    public async Task<bool> DeleteDuplicatedStickerAsync(string collectionId, int number)
     {
-        var stickers = await GetStickersByAlbumAndNumberAsync(albumId, number);
+        var stickers = await GetStickersByCollectionAndNumberAsync(collectionId, number);
 
         // Rule: don't delete if only one sticker exists as it is considered as already added to the album
         if (stickers.Count <= 1)

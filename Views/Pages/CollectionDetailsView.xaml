@@ -4,11 +4,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:Stickr.ViewModels.Pages"
-    xmlns:models="clr-namespace:Stickr.Models"
     xmlns:converters="clr-namespace:Stickr.Converters"
     xmlns:elements="clr-namespace:Stickr.ViewModels.Elements"
-    x:Class="Stickr.Views.Pages.AlbumDetailsView"
-    x:DataType="pages:AlbumDetailsViewModel"
+    x:Class="Stickr.Views.Pages.CollectionDetailsView"
+    x:DataType="pages:CollectionDetailsViewModel"
     Title="{Binding Title}">
 
     <ContentPage.Resources>
@@ -21,7 +20,7 @@
                           HeightRequest="400">
 
                 <CarouselView.ItemTemplate>
-                    <DataTemplate x:DataType="elements:AlbumPageViewModel">
+                    <DataTemplate x:DataType="elements:CollectionPageViewModel">
                         <VerticalStackLayout Padding="16" Spacing="12">
 
                             <Label Text="{Binding PageNumber, StringFormat='Page {0}'}"

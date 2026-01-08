@@ -10,9 +10,10 @@
     x:DataType="viewModels:CollectionsViewModel"
     BackgroundColor="{StaticResource BackgroundColor}"
     Shell.NavBarIsVisible="False"
-    Padding="24, 16">
+    Padding="24">
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, *"
+          Margin="0, 8">
 
         <!-- Loading indicator -->
         <ActivityIndicator
@@ -25,7 +26,7 @@
         <!-- Available Collections -->
         <Label Grid.Row="0"
                Style="{StaticResource TitleStyle}"
-               Text="Available Collections"
+               Text="Collections"
                Margin="0, 8"/>
         
         <Label Grid.Row="0"
@@ -55,16 +56,20 @@
                         Margin="0, 8"
                         BackgroundColor="{StaticResource SecondaryColor}"
                         HeightRequest="360"
-                        Stroke="{StaticResource BorderColor}"
+                        Stroke="{StaticResource SecondaryColor}"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 10,10,10,10">
+                        
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding OpenCollectionDetailsCommand}" />
+                        </Border.GestureRecognizers>
                         
                         <Grid RowDefinitions="*, *">
                             
                             <Image Grid.Row="0"
                                    Aspect="AspectFill"
-                                   Source="{Binding Model.Image}"
-                                   Margin="-1"/>
+                                   Source="{Binding Model.Image}"/>
                             
                             <Grid Grid.Row="1"
                                   RowDefinitions="Auto, Auto, Auto, *">

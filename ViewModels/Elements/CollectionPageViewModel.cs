@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 
 namespace Stickr.ViewModels.Elements;
 
-public class AlbumPageViewModel
+public class CollectionPageViewModel
 {
     #region Properties
     
@@ -13,7 +13,7 @@ public class AlbumPageViewModel
 
     #region Constructor & Dependencies
 
-    public AlbumPageViewModel(
+    public CollectionPageViewModel(
         int pageNumber,
         IEnumerable<StickerViewModel> stickers)
     {

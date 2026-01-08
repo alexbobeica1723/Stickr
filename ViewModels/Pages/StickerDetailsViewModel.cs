@@ -8,19 +8,19 @@ using Stickr.ViewModels.Base;
 namespace Stickr.ViewModels.Pages;
 
 [QueryProperty(nameof(Number), NavigationParameters.StickerNumber)]
-[QueryProperty(nameof(AlbumId), NavigationParameters.AlbumId)]
+[QueryProperty(nameof(CollectionId), NavigationParameters.CollectionId)]
 public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
     #region Properties
     
     [ObservableProperty]
-    private int number;
+    private int _number;
     [ObservableProperty]
-    private string albumTitle = string.Empty;
+    private string _collectionTitle = string.Empty;
     [ObservableProperty]
-    private string albumId = string.Empty;
+    private string _collectionId = string.Empty;
     [ObservableProperty]
-    private int duplicatesCount;
+    private int _duplicatesCount;
     public bool CanDelete => DuplicatesCount > 1;
     
     #endregion
@@ -32,7 +32,7 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
     {
         await _stickersRepository.InsertStickerAsync(new Sticker
         {
-            AlbumId = AlbumId,
+            CollectionId = CollectionId,
             Number = Number
         });
 
@@ -48,7 +48,7 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
             return;     
         }
         
-        await _stickersRepository.DeleteDuplicatedStickerAsync(AlbumId, Number);
+        await _stickersRepository.DeleteDuplicatedStickerAsync(CollectionId, Number);
 
         DuplicatesCount--;
         OnPropertyChanged(nameof(CanDelete));
@@ -59,14 +59,14 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
     #region Constructor & Dependencies
     
     private readonly IStickersRepository _stickersRepository;
-    private readonly IAlbumsRepository _albumsRepository;
+    private readonly ICollectionsRepository _collectionsRepository;
 
     public StickerDetailsViewModel(
         IStickersRepository stickersRepository,
-        IAlbumsRepository albumsRepository)
+        ICollectionsRepository collectionsRepository)
     {
         _stickersRepository = stickersRepository;
-        _albumsRepository = albumsRepository;
+        _collectionsRepository = collectionsRepository;
     }
     
     #endregion
@@ -77,18 +77,18 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
     {
         IsBusy = true;
         
-        var stickersList = await _stickersRepository.GetStickersByAlbumAndNumberAsync(AlbumId, Number);
+        var stickersList = await _stickersRepository.GetStickersByCollectionAndNumberAsync(CollectionId, Number);
         var sticker = stickersList.FirstOrDefault();
         if (sticker is null)
         {
             return;       
         }
         
-        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(sticker.AlbumId);
-        AlbumTitle = album.Title;
+        var collection = await _collectionsRepository.GetCollectionByIdAsync(sticker.CollectionId);
+        CollectionTitle = collection.Title;
 
         DuplicatesCount =
-            await _stickersRepository.CountStickersAsync(sticker.AlbumId, sticker.Number);
+            await _stickersRepository.CountCollectionStickersAsync(sticker.CollectionId, sticker.Number);
 
         OnPropertyChanged(nameof(CanDelete));
 
@@ -97,9 +97,9 @@ public partial class StickerDetailsViewModel : BaseModalPageViewModel, IQueryAtt
     
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue(NavigationParameters.AlbumId, out var value))
+        if (query.TryGetValue(NavigationParameters.CollectionId, out var value))
         {
-            AlbumId = value.ToString() ?? string.Empty;
+            CollectionId = value.ToString() ?? string.Empty;
         }
         
         if (query.TryGetValue(NavigationParameters.StickerNumber, out var value2))

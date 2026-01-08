@@ -21,6 +21,9 @@ public class CollectionsRepository : ICollectionsRepository
     #region Public Methods
     
     public Task<List<Collection>> GetCollectionsAsync() => _databaseConnection.Table<Collection>().ToListAsync();
+    public Task<Collection> GetCollectionByIdAsync(string collectionId)
+        => _databaseConnection.Table<Collection>()
+            .Where(c => c.Id == collectionId).FirstOrDefaultAsync();
     public Task InsertCollectionAsync(Collection collection) => _databaseConnection.InsertAsync(collection);
     public Task<int> UpdateCollectionAsync(Collection collection) => _databaseConnection.InsertOrReplaceAsync(collection);
     

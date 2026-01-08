@@ -4,8 +4,8 @@ namespace Stickr.Constants;
 
 public static class NavigationRoutes
 {
-    public const string AlbumDetailsPage = nameof(AlbumDetailsView);
+    public const string CollectionDetailsPage = nameof(CollectionDetailsView);
     public const string StickerDetailsPage = nameof(StickerDetailsView);
-    public const string AlbumStatsPage = nameof(AlbumStatsView);
+    public const string CollectionStatsPage = nameof(CollectionStatsView);
     public const string CreateCollectionPage = nameof(CreateCollectionView);
 }

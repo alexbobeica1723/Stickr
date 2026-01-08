@@ -32,7 +32,6 @@ public class DatabaseService : IDatabaseService
     public async Task InitializeAsync()
     {
         await _databaseConnection.CreateTableAsync<Collection>();
-        await _databaseConnection.CreateTableAsync<Album>();
         await _databaseConnection.CreateTableAsync<Sticker>(); 
     }
 

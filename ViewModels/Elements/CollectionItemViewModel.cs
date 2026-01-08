@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Stickr.Messages;
+using Stickr.Constants;
 using Stickr.Models;
 using Stickr.Repositories.Interfaces;
 using Stickr.Services.Interfaces;
@@ -29,24 +28,36 @@ public partial class CollectionItemViewModel : BaseViewModel
     
     public IAsyncRelayCommand StartCollectingCommand { get; }
     
+    [RelayCommand]
+    private async Task OpenCollectionDetailsAsync()
+    {
+        if (!IsCollecting)
+        {
+            return;
+        }
+        
+        await _navigationService.NavigateWithOneParameterAsync(NavigationRoutes.CollectionDetailsPage,
+            NavigationParameters.CollectionId, Model.Id);
+    }
+    
     #endregion
 
     #region Constructor & Dependencies
     
     private readonly ICollectionsRepository _collectionsRepository;
-    private readonly IAlbumsRepository _albumsRepository;
     private readonly IDisplayAlertService _displayAlertService;
+    private readonly INavigationService _navigationService;
     
     public CollectionItemViewModel(
         Collection model,
         ICollectionsRepository collectionsRepository,
-        IAlbumsRepository albumsRepository,
-        IDisplayAlertService displayAlertService)
+        IDisplayAlertService displayAlertService,
+        INavigationService navigationService)
     {
         Model = model;
         _collectionsRepository =  collectionsRepository;
-        _albumsRepository = albumsRepository;
         _displayAlertService = displayAlertService;
+        _navigationService = navigationService;
 
         IsCollecting = model.IsCollecting;
         IsStartCollectionIconVisible = !IsCollecting;
@@ -76,26 +87,11 @@ public partial class CollectionItemViewModel : BaseViewModel
         }
 
         IsStartCollectionIconVisible = false;
-        
-        var album = new Album
-        {
-            CollectionId = Model.Id,
-            Title = Model.Title,
-            Image = Model.Image,
-            TotalStickers = Model.TotalStickers,
-            StickerRegexPattern = Model.StickerRegexPattern,
-            Pages = Model.Pages
-        };
-
-        await _albumsRepository.InsertAlbumAsync(album);
 
         Model.IsCollecting = true;
         IsCollecting = true;
 
         await _collectionsRepository.UpdateCollectionAsync(Model);
-        
-        // 🔔 Notify My Albums
-        WeakReferenceMessenger.Default.Send(new AlbumStartedMessage());
     }
     
     #endregion

@@ -13,16 +13,26 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
 {
     #region Properties
     
-    [ObservableProperty] private string title = string.Empty;
-    [ObservableProperty] private string description = string.Empty;
-    [ObservableProperty] private string? stickerRegex;
-    [ObservableProperty] private string imagePath = string.Empty;
-    [ObservableProperty] private bool startCollecting;
+    [ObservableProperty] private string _title = string.Empty;
+    [ObservableProperty] private string _description = string.Empty;
+    [ObservableProperty] private string? _stickerRegex;
+    [ObservableProperty] private string _imagePath = string.Empty;
+    [ObservableProperty] private bool _startCollecting;
+    [ObservableProperty] private bool _isAddImageIconVisible = true;
+    [ObservableProperty] private bool _isImageVisible = false;
     public ObservableCollection<Page> Pages { get; } = new();
     
     #endregion
     
     #region Commands
+    
+    [RelayCommand]
+    private void ClearImage()
+    {
+        ImagePath = string.Empty;
+        IsImageVisible = false;
+        IsAddImageIconVisible = true;
+    }
     
     [RelayCommand]
     private void AddPage()
@@ -62,6 +72,8 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
         await source.CopyToAsync(destination);
 
         ImagePath = destinationPath;
+        IsImageVisible = true;
+        IsAddImageIconVisible = false;
     }
     
     [RelayCommand]
@@ -110,7 +122,7 @@ public partial class CreateCollectionViewModel : BaseModalPageViewModel
     public override Task InitializeDataAsync()
     {
         // Start with one empty page by default
-        Pages.Add(new Page { Number = 1 });
+        Pages.Add(new Page { Number = 1, FirstSticker = 1 });
         return Task.CompletedTask;
     }
     

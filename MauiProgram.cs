@@ -41,27 +41,24 @@ public static class MauiProgram
         
         // Repositories
         builder.Services.AddSingleton<ICollectionsRepository, CollectionsRepository>();
-        builder.Services.AddSingleton<IAlbumsRepository, AlbumsRepository>();
         builder.Services.AddSingleton<IStickersRepository, StickersRepository>();
 
         // ViewModels
         builder.Services.AddSingleton<CollectionsViewModel>();
-        builder.Services.AddSingleton<MyAlbumsViewModel>();
         builder.Services.AddSingleton<ProfileViewModel>();
-        builder.Services.AddTransient<AlbumDetailsViewModel>();
+        builder.Services.AddTransient<CollectionDetailsViewModel>();
         builder.Services.AddTransient<CreateCollectionViewModel>();
         builder.Services.AddTransient<StickerDetailsViewModel>();
-        builder.Services.AddTransient<AlbumStatsViewModel>();
+        builder.Services.AddTransient<CollectionStatsViewModel>();
         builder.Services.AddSingleton<OnboardingViewModel>();
 
         // Views
         builder.Services.AddSingleton<CollectionsView>();
-        builder.Services.AddSingleton<MyAlbumsView>();
         builder.Services.AddSingleton<ProfileView>();
-        builder.Services.AddTransient<AlbumDetailsView>();
+        builder.Services.AddTransient<CollectionDetailsView>();
         builder.Services.AddTransient<CreateCollectionView>();
         builder.Services.AddTransient<StickerDetailsView>();
-        builder.Services.AddTransient<AlbumStatsView>();
+        builder.Services.AddTransient<CollectionStatsView>();
         builder.Services.AddSingleton<OnboardingView>();
 
 #if DEBUG

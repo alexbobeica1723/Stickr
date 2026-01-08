@@ -4,11 +4,11 @@ namespace Stickr.Repositories.Interfaces;
 
 public interface IStickersRepository
 {
-    Task<List<Sticker>> GetStickersByAlbumIdAsync(string albumId);
+    Task<List<Sticker>> GetStickersByCollectionIdAsync(string collectionId);
     Task InsertStickerAsync(Sticker sticker);
     Task InsertMultipleStickersAsync(IEnumerable<Sticker> stickers);
-    Task<int> CountStickersAsync(string albumId, int number);
-    Task<List<Sticker>> GetStickersByAlbumAndNumberAsync(string albumId, int number);
-    Task<int> GetUniqueStickerCountAsync(string albumId);
-    Task<bool> DeleteDuplicatedStickerAsync(string albumId, int number);
+    Task<int> CountCollectionStickersAsync(string collectionId, int number);
+    Task<List<Sticker>> GetStickersByCollectionAndNumberAsync(string collectionId, int number);
+    Task<int> GetUniqueStickerCountAsync(string collectionId);
+    Task<bool> DeleteDuplicatedStickerAsync(string collectionId, int number);
 }

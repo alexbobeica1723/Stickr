@@ -27,7 +27,7 @@ public partial class StickerViewModel : BaseViewModel
             new Dictionary<string, object>
             {
                 [NavigationParameters.StickerNumber] = StickerNumber,
-                [NavigationParameters.AlbumId] = AlbumId
+                [NavigationParameters.CollectionId] = AlbumId
             });
     }
     

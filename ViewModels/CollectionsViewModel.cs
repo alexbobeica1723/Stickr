@@ -33,20 +33,17 @@ public partial class CollectionsViewModel : BaseTabViewModel
     private readonly INavigationService _navigationService;
     private readonly IDisplayAlertService _displayAlertService;
     private readonly ICollectionsRepository _collectionsRepository;
-    private readonly IAlbumsRepository _albumsRepository;
 
     public CollectionsViewModel(
         IAppInitializationService appInitializationService,
         INavigationService navigationService,
         IDisplayAlertService displayAlertService,
-        ICollectionsRepository collectionsRepository,
-        IAlbumsRepository albumsRepository)
+        ICollectionsRepository collectionsRepository)
         : base(appInitializationService)
     {
         _navigationService = navigationService;
         _displayAlertService = displayAlertService;
         _collectionsRepository = collectionsRepository;
-        _albumsRepository = albumsRepository;
     }
     
     #endregion
@@ -63,7 +60,7 @@ public partial class CollectionsViewModel : BaseTabViewModel
         foreach (var c in data)
         {
             Collections.Add(
-                new CollectionItemViewModel(c, _collectionsRepository, _albumsRepository, _displayAlertService));
+                new CollectionItemViewModel(c, _collectionsRepository, _displayAlertService, _navigationService));
         }
         
         IsEmpty = data.Count == 0;

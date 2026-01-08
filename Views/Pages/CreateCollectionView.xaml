@@ -4,52 +4,99 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Stickr.ViewModels.Pages"
              xmlns:models="clr-namespace:Stickr.Models"
+             xmlns:icons="clr-namespace:Stickr.Constants"
+             Shell.TabBarIsVisible="False"
              x:Class="Stickr.Views.Pages.CreateCollectionView"
-             x:DataType="vm:CreateCollectionViewModel">
-    <ScrollView>
-        <VerticalStackLayout Spacing="12" Padding="16">
+             x:DataType="vm:CreateCollectionViewModel"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             Title="Create a new collection"
+             Padding="24">
+    <Grid RowDefinitions="*, Auto, Auto">
+        <ScrollView Grid.Row="0"
+                    VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="12">
+                   
+                <Grid RowDefinitions="Auto">
+                       <Label Grid.Row="0"
+                              Style="{StaticResource HeadlineTextStyle}"
+                              Text="Image"/>
+                
+                       <Label Grid.Row="0"
+                              Style="{StaticResource ClickableLabelStyle}"
+                              Text="Clear"
+                              IsVisible="{Binding IsImageVisible}"
+                              HorizontalOptions="End">
+                              <Label.GestureRecognizers>
+                                     <TapGestureRecognizer Command="{Binding ClearImageCommand}"/>
+                              </Label.GestureRecognizers>
+                       </Label>
+                </Grid>
+                
+                <Label Style="{StaticResource MainIconClickableStyle}"
+                       Text="{x:Static icons:Icons.Image}"
+                       FontFamily="MaterialIcons"
+                       IsVisible="{Binding IsAddImageIconVisible}">
+                       <Label.GestureRecognizers>
+                              <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                       </Label.GestureRecognizers>
+                </Label>
 
-            <Image Source="{Binding ImagePath}"
-                   HeightRequest="180"
-                   Aspect="AspectFill" />
+                <Border Stroke="{StaticResource SecondaryColor}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 10,10,10,10"
+                        HeightRequest="180"
+                        IsVisible="{Binding IsImageVisible}">
+                       <Image Source="{Binding ImagePath}"
+                              Aspect="AspectFill">
+                              <Image.GestureRecognizers>
+                                     <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                              </Image.GestureRecognizers>
+                       </Image>
+                </Border>
 
-            <Button Text="Pick cover image"
-                    Command="{Binding PickImageCommand}" />
+                <Label Style="{StaticResource HeadlineTextStyle}"
+                       Text="Title"/>
+                
+                <Entry Placeholder="Title"
+                       Text="{Binding Title}" />
 
-            <Entry Placeholder="Title"
-                   Text="{Binding Title}" />
+                <Label Style="{StaticResource HeadlineTextStyle}"
+                       Text="Description"/>
+                
+                <Entry Placeholder="Description"
+                       Text="{Binding Description}" />
 
-            <Editor Placeholder="Description"
-                    Text="{Binding Description}" />
+                <Label Style="{StaticResource HeadlineTextStyle}"
+                       Text="Pages"/>
 
-            <Entry Placeholder="Sticker regex (optional)"
-                   Text="{Binding StickerRegex}" />
+                <CollectionView ItemsSource="{Binding Pages}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Page">
+                            <HorizontalStackLayout Spacing="8">
+                                <Entry WidthRequest="60"
+                                       Text="{Binding FirstSticker}" />
+                                <Label Text="→" />
+                                <Entry WidthRequest="60"
+                                       Text="{Binding LastSticker}" />
+                                <Button Text="✕"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CreateCollectionViewModel}}, Path=RemovePageCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Label Text="Pages" FontAttributes="Bold" />
-
-            <CollectionView ItemsSource="{Binding Pages}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Page">
-                        <HorizontalStackLayout Spacing="8">
-                            <Entry WidthRequest="60"
-                                   Text="{Binding FirstSticker}" />
-                            <Label Text="→" />
-                            <Entry WidthRequest="60"
-                                   Text="{Binding LastSticker}" />
-                            <Button Text="✕"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CreateCollectionViewModel}}, Path=RemovePageCommand}"
-                                    CommandParameter="{Binding .}" />
-                        </HorizontalStackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <Button Text="Add page"
-                    Command="{Binding AddPageCommand}" />
-
-            <Button Text="Save collection"
-                    Command="{Binding SaveCommand}" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button Grid.Row="1"
+                Style="{StaticResource SecondaryButton}"
+                Text="Add new page"
+                Command="{Binding AddPageCommand}"
+                
+                Margin="0, 24, 0, 8"/>
+        <Button Grid.Row="2"
+                Style="{StaticResource PrimaryButton}"
+                Text="Create collection"
+                Command="{Binding SaveCommand}"/>
+    </Grid>
 </ContentPage>

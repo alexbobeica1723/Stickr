@@ -7,9 +7,9 @@ using Stickr.ViewModels.Pages;
 
 namespace Stickr.Views.Pages;
 
-public partial class AlbumStatsView : ContentPage
+public partial class CollectionStatsView : ContentPage
 {
-    public AlbumStatsView(AlbumStatsViewModel viewModel)
+    public CollectionStatsView(CollectionStatsViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -19,7 +19,7 @@ public partial class AlbumStatsView : ContentPage
     {
         base.OnAppearing();
 
-        if (BindingContext is AlbumStatsViewModel viewModel)
+        if (BindingContext is CollectionStatsViewModel viewModel)
         {
             await viewModel.InitializeDataAsync();
         }

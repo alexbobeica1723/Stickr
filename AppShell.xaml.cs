@@ -8,9 +8,9 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
         
-        Routing.RegisterRoute(nameof(AlbumDetailsView), typeof(AlbumDetailsView));
+        Routing.RegisterRoute(nameof(CollectionDetailsView), typeof(CollectionDetailsView));
         Routing.RegisterRoute(nameof(CreateCollectionView), typeof(CreateCollectionView));
         Routing.RegisterRoute(nameof(StickerDetailsView), typeof(StickerDetailsView));
-        Routing.RegisterRoute(nameof(AlbumStatsView), typeof(AlbumStatsView));
+        Routing.RegisterRoute(nameof(CollectionStatsView), typeof(CollectionStatsView));
     }
 }

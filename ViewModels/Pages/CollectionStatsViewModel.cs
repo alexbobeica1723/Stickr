@@ -8,13 +8,13 @@ using Stickr.ViewModels.Base;
 
 namespace Stickr.ViewModels.Pages;
 
-[QueryProperty(nameof(AlbumId), NavigationParameters.AlbumId)]
-public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttributable
+[QueryProperty(nameof(CollectionId), NavigationParameters.CollectionId)]
+public partial class CollectionStatsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
     #region Properties
 
     [ObservableProperty]
-    private string _albumId;
+    private string _collectionId;
     public ObservableCollection<int> MissingStickers { get; } = new();
     public ObservableCollection<DuplicatedStickerItem> DuplicatedStickers { get; } = new();
     
@@ -44,12 +44,12 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
     #region Constructor & Dependencies
     
     private readonly IStickersRepository _stickersRepository;
-    private readonly IAlbumsRepository _albumsRepository;
+    private readonly ICollectionsRepository _collectionsRepository;
 
-    public AlbumStatsViewModel(IAlbumsRepository albumsRepository,
+    public CollectionStatsViewModel(ICollectionsRepository collectionsRepository,
         IStickersRepository stickersRepository)
     {
-        _albumsRepository = albumsRepository;
+        _collectionsRepository = collectionsRepository;
         _stickersRepository = stickersRepository;
     }
     
@@ -59,7 +59,7 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
 
     public override async Task InitializeDataAsync()
     {
-        var stickers = await _stickersRepository.GetStickersByAlbumIdAsync(AlbumId);
+        var stickers = await _stickersRepository.GetStickersByCollectionIdAsync(CollectionId);
 
         await BuildMissingStickers(stickers);
         BuildDuplicatedStickers(stickers);
@@ -67,9 +67,9 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
     
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue(NavigationParameters.AlbumId, out var value))
+        if (query.TryGetValue(NavigationParameters.CollectionId, out var value))
         {
-            AlbumId = value.ToString() ?? string.Empty;
+            CollectionId = value.ToString() ?? string.Empty;
         }
     }
     
@@ -81,9 +81,9 @@ public partial class AlbumStatsViewModel : BaseModalPageViewModel, IQueryAttribu
     {
         MissingStickers.Clear();
 
-        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(AlbumId);
+        var collection = await _collectionsRepository.GetCollectionByIdAsync(CollectionId);
 
-        var expected = album.Pages
+        var expected = collection.Pages
             .SelectMany(p => Enumerable.Range(
                 p.FirstSticker,
                 p.LastSticker - p.FirstSticker + 1))

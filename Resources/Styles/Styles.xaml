@@ -163,11 +163,12 @@
     </Style>
 
     <Style TargetType="Entry">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource SecondaryTextColor}" />
+        <Setter Property="FontFamily" Value="PoppinsRegular"/>
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -277,7 +278,6 @@
         <Setter Property="TextColor" Value="{StaticResource PrimaryColor}"/>
         <Setter Property="FontFamily" Value="PoppinsSemiBold" />
         <Setter Property="FontSize" Value="18" />
-        <Setter Property="TextDecorations" Value="Underline"/>
         <Setter Property="HorizontalOptions" Value="Start" />
         <Setter Property="VerticalOptions" Value="Start" />
         <Setter Property="HorizontalTextAlignment" Value="Start" />
@@ -294,6 +294,14 @@
     <Style TargetType="Label" x:Key="MainIconStyle">
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="TextColor" Value="{StaticResource SecondaryColor}"/>
+        <Setter Property="FontFamily" Value="MaterialIcons" />
+        <Setter Property="FontSize" Value="112" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+    </Style>
+    
+    <Style TargetType="Label" x:Key="MainIconClickableStyle">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}"/>
         <Setter Property="FontFamily" Value="MaterialIcons" />
         <Setter Property="FontSize" Value="112" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />

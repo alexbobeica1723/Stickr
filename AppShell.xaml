@@ -15,10 +15,6 @@
             ContentTemplate="{DataTemplate views:CollectionsView}" />
 
         <ShellContent
-            Title="My Albums"
-            ContentTemplate="{DataTemplate views:MyAlbumsView}" />
-
-        <ShellContent
             Title="Profile"
             ContentTemplate="{DataTemplate views:ProfileView}" />
     </TabBar>

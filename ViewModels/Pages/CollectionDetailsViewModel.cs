@@ -12,8 +12,8 @@ using Stickr.ViewModels.Elements;
 
 namespace Stickr.ViewModels.Pages;
 
-[QueryProperty(nameof(AlbumId), NavigationParameters.AlbumId)]
-public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
+[QueryProperty(nameof(CollectionId), NavigationParameters.CollectionId)]
+public partial class CollectionDetailsViewModel : BaseModalPageViewModel, IQueryAttributable
 {
     #region Fields
     
@@ -24,8 +24,8 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     #region Properties
     
-    [ObservableProperty] private string _albumId;
-    public ObservableCollection<AlbumPageViewModel> Pages { get; } = [];
+    [ObservableProperty] private string _collectionId;
+    public ObservableCollection<CollectionPageViewModel> Pages { get; } = [];
     [ObservableProperty] private string _imagePath;
     [ObservableProperty]
     private string _title;
@@ -41,7 +41,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     [RelayCommand]
     private async Task ScanStickersAsync()
     {
-        if (string.IsNullOrWhiteSpace(_albumId))
+        if (string.IsNullOrWhiteSpace(_collectionId))
         {
             return;
         }
@@ -120,7 +120,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         var newStickers = detectedNumbers
             .Select(n => new Sticker
             {
-                AlbumId = _albumId,
+                CollectionId = CollectionId,
                 Number = n
             })
             .ToList();
@@ -128,18 +128,18 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         await _stickersRepository.InsertMultipleStickersAsync(newStickers);
         
         foreach (var sticker in newStickers)Stickers.Add(sticker);
-        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
+        var collection = await _collectionsRepository.GetCollectionByIdAsync(CollectionId);
         
-        RebuildPages(album);
+        RebuildPages(collection);
     }
     
     [RelayCommand]
     private async Task OpenStatsAsync()
     {
         await _navigationService.NavigateWithOneParameterAsync(
-            NavigationRoutes.AlbumStatsPage,
-            NavigationParameters.AlbumId,
-            _albumId);
+            NavigationRoutes.CollectionStatsPage,
+            NavigationParameters.CollectionId,
+            _collectionId);
     }
     
     #endregion
@@ -149,20 +149,20 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     private readonly IDisplayAlertService _displayAlertService;
     private readonly INavigationService _navigationService;
     private readonly IPermissionsService _permissionsService;
-    private readonly IAlbumsRepository _albumsRepository;
+    private readonly ICollectionsRepository _collectionsRepository;
     private readonly IStickersRepository _stickersRepository;
 
-    public AlbumDetailsViewModel(
+    public CollectionDetailsViewModel(
         IDisplayAlertService displayAlertService,
         INavigationService navigationService,
         IPermissionsService permissionsService,
-        IAlbumsRepository albumsRepository,
+        ICollectionsRepository collectionsRepository,
         IStickersRepository stickersRepository)
     {
         _displayAlertService = displayAlertService;
         _navigationService = navigationService;
         _permissionsService = permissionsService;
-        _albumsRepository = albumsRepository;
+        _collectionsRepository = collectionsRepository;
         _stickersRepository = stickersRepository;
     }
     
@@ -172,36 +172,36 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue(NavigationParameters.AlbumId, out var value))
+        if (query.TryGetValue(NavigationParameters.CollectionId, out var value))
         {
-            AlbumId = value.ToString() ?? string.Empty;
+            CollectionId = value.ToString() ?? string.Empty;
         }
     }
 
     public override async Task InitializeDataAsync()
     {
-        if (string.IsNullOrWhiteSpace(AlbumId))
+        if (string.IsNullOrWhiteSpace(CollectionId))
         {
             return; 
         }
 
         IsBusy = true;
         
-        var album = await _albumsRepository.GetAlbumByCollectionIdAsync(_albumId);
+        var collection = await _collectionsRepository.GetCollectionByIdAsync(CollectionId);
 
-        if (album is null)
+        if (collection is null)
         {
             return;
         }
 
-        Title = album.Title;
-        ImagePath = album.Image;
-        _stickerPattern = album.StickerRegexPattern;
+        Title = collection.Title;
+        ImagePath = collection.Image;
+        _stickerPattern = collection.StickerRegexPattern;
 
         await UpdateStickersAsync();
         
         Pages.Clear();
-        RebuildPages(album);
+        RebuildPages(collection);
 
         IsBusy = false;
     }
@@ -212,7 +212,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
     
     private async Task UpdateStickersAsync()
     {
-        var list = await _stickersRepository.GetStickersByAlbumIdAsync(_albumId);
+        var list = await _stickersRepository.GetStickersByCollectionIdAsync(_collectionId);
         Stickers = new ObservableCollection<Sticker>(list);
     }
     
@@ -237,7 +237,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
         }
     }
     
-    private void RebuildPages(Album? album)
+    private void RebuildPages(Collection? album)
     {
         if (album is null)
         {
@@ -265,7 +265,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
                 stickerViewModels.Add(
                     new StickerViewModel(
                         _navigationService,
-                        _albumId,
+                        _collectionId,
                         stickerNumber,
                         isCollected: isCollected
                     )
@@ -273,7 +273,7 @@ public partial class AlbumDetailsViewModel : BaseModalPageViewModel, IQueryAttri
             }
 
             Pages.Add(
-                new AlbumPageViewModel(
+                new CollectionPageViewModel(
                     pageNumber: page.Number,
                     stickers: stickerViewModels
                 )
